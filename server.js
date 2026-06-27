@@ -2393,6 +2393,19 @@ ${text}`;
       return;
     }
 
+    // GET /api/test-push
+    if (req.method === 'GET' && req.url === '/api/test-push') {
+      try {
+        await sendPushNotification('Test Alert', 'Web Push is working perfectly!');
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, message: 'Test push initiated' }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+      return;
+    }
+
     // POST /api/notifications/subscribe
     if (req.method === 'POST' && req.url === '/api/notifications/subscribe') {
       let body = '';
