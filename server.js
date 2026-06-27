@@ -23,8 +23,10 @@ if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
 }
 
 let db = null;
-if (process.env.MONGO_URI) {
-  const client = new MongoClient(process.env.MONGO_URI);
+const rawMongoUri = process.env.MONGO_URI || process.env.MONGODB_URI;
+if (rawMongoUri) {
+  const cleanUri = rawMongoUri.replace(/^["']|["']$/g, '');
+  const client = new MongoClient(cleanUri);
   client.connect()
     .then(c => {
       db = c.db('aircraftAlert');
