@@ -2164,7 +2164,10 @@ const httpServer = http.createServer(async (req, res) => {
 - Wind & Visibility
 - Altimeter (QNH)
 - Any critical hazards or notices (e.g., closures, windshear)
-Do not include any conversational filler. Keep it extremely brief.
+
+CRITICAL RULES:
+1. Do NOT confuse Taxiways (TWY or T) with Runways (RWY or R). If it says "TWY T", that is Taxiway Tango, NOT Runway Tango.
+2. Keep it extremely brief with no conversational filler.
 
 ATIS:
 ${text}`;
