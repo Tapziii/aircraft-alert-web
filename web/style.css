@@ -359,6 +359,7 @@ html, body {
 }
 .fav-input {
   flex: 1;
+  min-width: 0;
   background: rgba(255,255,255,.06);
   border: 1px solid rgba(255,255,255,.1);
   border-radius: 6px;
