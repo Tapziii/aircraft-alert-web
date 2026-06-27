@@ -1976,13 +1976,18 @@
     // ---- Text D-ATIS Fetch ----
     const $datisInput = document.getElementById('datis-input');
     const $datisBtn = document.getElementById('datis-fetch-btn');
+    const $datisSumBtn = document.getElementById('datis-sum-btn');
     const $datisRes = document.getElementById('datis-result');
     if ($datisInput && $datisBtn && $datisRes) {
+      let lastAtisText = '';
+      
       $datisBtn.addEventListener('click', async () => {
         const icao = $datisInput.value.trim().toUpperCase();
         if (icao.length < 3) return;
         $datisRes.style.display = 'block';
         $datisRes.textContent = 'Fetching D-ATIS for ' + icao + '...';
+        if ($datisSumBtn) $datisSumBtn.style.display = 'none';
+        
         try {
           const r = await fetch(`${API_BASE}/api/atis/${icao}`);
           const data = await r.json();
@@ -1994,11 +1999,38 @@
           if (data.combined) out += `\n${data.combined}`;
           if (data.arr) out += `\nARR: ${data.arr}`;
           if (data.dep) out += `\nDEP: ${data.dep}`;
-          $datisRes.textContent = out.trim() || 'No ATIS content found.';
+          
+          lastAtisText = out.trim();
+          $datisRes.textContent = lastAtisText || 'No ATIS content found.';
+          if (lastAtisText && $datisSumBtn) $datisSumBtn.style.display = 'block';
         } catch (e) {
           $datisRes.textContent = 'Network error fetching ATIS.';
         }
       });
+      
+      if ($datisSumBtn) {
+        $datisSumBtn.addEventListener('click', async () => {
+          if (!lastAtisText) return;
+          const origText = $datisRes.textContent;
+          $datisRes.textContent = '✨ AI Summarizing...\n\n' + origText;
+          try {
+            const r = await fetch(`${API_BASE}/api/atis/summarize`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ text: lastAtisText })
+            });
+            const data = await r.json();
+            if (r.ok && data.summary) {
+              $datisRes.innerHTML = `<div style="color:#fff; margin-bottom:8px;"><b>AI Summary:</b><br>${data.summary.replace(/\n/g, '<br>')}</div><hr style="border-color:rgba(255,255,255,0.1)"><div style="color:var(--text-muted)">${origText}</div>`;
+            } else {
+              $datisRes.textContent = 'Failed to summarize: ' + (data.error || 'Unknown error') + '\n\n' + origText;
+            }
+          } catch (e) {
+            $datisRes.textContent = 'Error summarizing.\n\n' + origText;
+          }
+        });
+      }
+      
       $datisInput.addEventListener('keyup', (e) => {
         if (e.key === 'Enter') $datisBtn.click();
       });

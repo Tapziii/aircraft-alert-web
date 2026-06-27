@@ -2118,7 +2118,7 @@ const httpServer = http.createServer(async (req, res) => {
         const extract = (label) => {
           const regex = new RegExp(`${label}[\\s\\S]*?<div class="atis">([\\s\\S]*?)<\\/div>`, 'i');
           const match = html.match(regex);
-          return match ? match[1].replace(/&#xA;/g, '\n').replace(/&#xD;/g, '\r').replace(/<[^>]*>/g, '').trim() : null;
+          return match ? match[1].replace(/&#xA;/g, '\n').replace(/&#xD;/g, '\r').replace(/&#x9;/g, '  ').replace(/<[^>]*>/g, '').trim() : null;
         };
 
         const arr = extract('Arrival ATIS');
@@ -2128,7 +2128,7 @@ const httpServer = http.createServer(async (req, res) => {
         if (!arr && !dep && !generic) {
           const genericMatch = html.match(/<div class="atis">([\s\S]*?)<\/div>/i);
           if (genericMatch) {
-            generic = genericMatch[1].replace(/&#xA;/g, '\n').replace(/&#xD;/g, '\r').replace(/<[^>]*>/g, '').trim();
+            generic = genericMatch[1].replace(/&#xA;/g, '\n').replace(/&#xD;/g, '\r').replace(/&#x9;/g, '  ').replace(/<[^>]*>/g, '').trim();
           }
         }
 
@@ -2144,6 +2144,55 @@ const httpServer = http.createServer(async (req, res) => {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: e.message }));
       }
+      return;
+    }
+
+    if (req.method === 'POST' && req.url === '/api/atis/summarize') {
+      let body = '';
+      req.on('data', chunk => body += chunk);
+      req.on('end', async () => {
+        try {
+          const { text } = JSON.parse(body);
+          if (!process.env.GROQ_API_KEY) {
+             res.writeHead(400, { 'Content-Type': 'application/json' });
+             res.end(JSON.stringify({ error: 'Groq API key not configured.' }));
+             return;
+          }
+          
+          const prompt = `You are an expert aviation AI. Summarize the following ATIS into a short, easy-to-read list of the most critical actionable items for a pilot. Use bullet points. Focus ONLY on:
+- Runways in use (Arrival/Departure)
+- Wind & Visibility
+- Altimeter (QNH)
+- Any critical hazards or notices (e.g., closures, windshear)
+Do not include any conversational filler. Keep it extremely brief.
+
+ATIS:
+${text}`;
+
+          const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: 'llama3-8b-8192',
+              messages: [{ role: 'user', content: prompt }],
+              temperature: 0.2,
+            })
+          });
+          
+          const groqData = await groqRes.json();
+          if (!groqRes.ok) throw new Error(groqData.error?.message || 'Groq API error');
+          
+          const summary = groqData.choices[0].message.content.trim();
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ summary }));
+        } catch (e) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
       return;
     }
 
