@@ -302,13 +302,23 @@ async function handleAdd(input) {
       { base: 'https://api.adsb.one/v2', name: 'adsb.one' },
       { base: 'https://opendata.adsb.fi/api/v2', name: 'adsb.fi' },
     ];
-    const results = await Promise.allSettled(
-      sources.map(s => tryLive(`${s.base}/${pathBuilder(s.name)}`))
-    );
-    for (const r of results) {
-      if (r.status === 'fulfilled' && r.value) return r.value;
-    }
-    return null;
+    
+    return new Promise((resolve) => {
+      let pending = sources.length;
+      let resolved = false;
+      
+      for (const s of sources) {
+        tryLive(`${s.base}/${pathBuilder(s.name)}`).then(result => {
+          if (result && !resolved) {
+            resolved = true;
+            resolve(result);
+          } else {
+            pending--;
+            if (pending === 0 && !resolved) resolve(null);
+          }
+        });
+      }
+    });
   }
 
   if (isHex) {
