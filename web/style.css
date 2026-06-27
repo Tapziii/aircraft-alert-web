@@ -1365,7 +1365,7 @@ html, body {
 
   .sidebar {
     width: 100vw;
-    height: 50vh;
+    height: 75vh;
     top: auto;
     bottom: 0;
     right: 0;
@@ -1392,8 +1392,11 @@ html, body {
   .sidebar-toggle svg { transform: rotate(90deg); width: 24px; height: 24px; }
 
   .sidebar-header { padding: 10px 16px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-
   .sidebar-close svg { transform: rotate(90deg); }
+
+  .add-panel { padding: 10px 16px 12px; }
+  .fav-section { padding: 8px 16px; }
+  .empty-state { padding: 20px 0; }
 
   .nearby-panel {
     top: 70px;
