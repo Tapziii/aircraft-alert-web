@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aircraft Tracker</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet 1.9.4 -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Connection status banner -->
+  <div id="conn-status" class="conn-status disconnected">
+    <span class="conn-dot"></span>
+    <span class="conn-label">Connecting…</span>
+  </div>
+
+  <!-- Full-viewport map -->
+  <div id="map"></div>
+
+  <!-- Sidebar toggle (visible when collapsed) -->
+  <button id="sidebar-toggle" class="sidebar-toggle" title="Open sidebar">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  </button>
+
+  <!-- Map Layers control (floating on map) -->
+  <button id="layers-btn" class="layers-btn" title="Map Layers">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+      <polyline points="2 17 12 22 22 17"></polyline>
+      <polyline points="2 12 12 17 22 12"></polyline>
+    </svg>
+  </button>
+  <div id="layers-panel" class="layers-panel" style="display:none">
+    <div class="layers-title">Map Layers</div>
+    <div class="settings-group">
+      <label class="settings-label">Map Style</label>
+      <select id="map-style" class="settings-select">
+        <option value="dark" selected>Dark Matter</option>
+        <option value="voyager">Voyager</option>
+        <option value="satellite">Satellite</option>
+        <option value="osm">OpenStreetMap</option>
+      </select>
+    </div>
+    <div class="layers-divider"></div>
+    <div class="layers-title" style="margin-top:0">Overlays</div>
+    <div class="settings-group">
+      <label class="settings-label">Fixes (Waypoints)</label>
+      <label class="toggle">
+        <input type="checkbox" id="show-fixes" />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="settings-group">
+      <label class="settings-label">VOR</label>
+      <label class="toggle">
+        <input type="checkbox" id="show-vor" />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="settings-group">
+      <label class="settings-label">NDB</label>
+      <label class="toggle">
+        <input type="checkbox" id="show-ndb" />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="settings-group">
+      <label class="settings-label">DME / TACAN</label>
+      <label class="toggle">
+        <input type="checkbox" id="show-dme" />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="settings-group">
+      <label class="settings-label">FIR Boundaries</label>
+      <label class="toggle">
+        <input type="checkbox" id="show-fir" />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="settings-group">
+      <label class="settings-label">NAT Tracks</label>
+      <label class="toggle">
+        <input type="checkbox" id="show-nat" />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="layers-divider"></div>
+    <div class="layers-title" style="margin-top:0">Radius</div>
+    <div class="settings-group">
+      <label class="settings-label">Radius Alerts</label>
+      <label class="toggle">
+        <input type="checkbox" id="geofence-enabled" />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="settings-group" id="geofence-radius-group" style="display:none">
+      <label class="settings-label">Radius</label>
+      <div class="settings-row">
+        <input type="range" id="geofence-radius" class="settings-range" min="5" max="100" value="25" step="5" />
+        <span id="geofence-radius-label" class="settings-value">25nm</span>
+      </div>
+    </div>
+    <div class="settings-group" id="geofence-coords-group" style="display:none">
+      <label class="settings-label">Center</label>
+      <button id="geofence-pick" class="settings-btn-small">📍 Pick from map</button>
+    </div>
+    <div class="settings-group" id="geofence-persist-group">
+      <label class="settings-label">Auto-resume</label>
+      <label class="toggle">
+        <input type="checkbox" id="geofence-persist" checked />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+
+
+  <!-- LiveATC control (floating on map, like Map Layers) -->
+  <button id="atc-map-btn" class="atc-map-btn" title="Live ATC Radio">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+    </svg>
+  </button>
+  <div id="atc-panel" class="atc-map-panel" style="display:none">
+    <div class="atc-panel-header">
+      <span class="atc-panel-icon">📻</span>
+      <span class="atc-panel-title">Live ATC</span>
+      <span id="atc-status" class="atc-status">Stopped</span>
+    </div>
+    <div class="layers-divider"></div>
+    <select id="atc-feed" class="atc-select">
+      <optgroup label="LLBG — Ben Gurion">
+        <option value="llbg2">LLBG — Gnd/Twr/App</option>
+      </optgroup>
+      <optgroup label="KSFO — San Francisco">
+        <option value="ksfo_twr">KSFO — Tower</option>
+        <option value="ksfo_gnd">KSFO — Ground</option>
+      </optgroup>
+    </select>
+    <div class="atc-buttons">
+      <button id="atc-play" class="atc-btn atc-play-btn" title="Play">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </button>
+      <button id="atc-stop" class="atc-btn atc-stop-btn" title="Stop" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      </button>
+      <svg class="atc-vol-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+      </svg>
+      <input type="range" id="atc-volume" class="atc-volume" min="0" max="100" value="60" title="Volume" />
+    </div>
+    <audio id="atc-audio" preload="none"></audio>
+  </div>
+
+  <!-- Nearby aircraft panel (left side, floating over map) -->
+  <div id="nearby-section" class="nearby-panel" style="display:none">
+    <div class="nearby-header">
+      <span class="nearby-icon">📡</span>
+      <span class="nearby-title">Nearby Aircraft</span>
+      <span id="nearby-count" class="nearby-count">0</span>
+    </div>
+    <div id="nearby-list" class="nearby-list"></div>
+  </div>
+
+  <!-- Right sidebar -->
+  <div id="sidebar" class="sidebar open">
+    <div class="sidebar-header">
+      <div class="sidebar-title">
+        <svg class="title-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
+        </svg>
+        <h1>Aircraft Tracker</h1>
+      </div>
+      <div class="header-actions">
+        <button id="refresh-btn" class="header-btn" title="Refresh now">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+        </button>
+        <button id="settings-btn" class="header-btn" title="Settings">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+        <button id="sidebar-close" class="header-btn sidebar-close" title="Collapse sidebar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="sidebar-stats" id="sidebar-stats">
+      <div class="stat"><span class="stat-value" id="stat-total">0</span><span class="stat-label">Tracked</span></div>
+      <div class="stat"><span class="stat-value stat-airborne" id="stat-airborne">0</span><span class="stat-label">Airborne</span></div>
+      <div class="stat"><span class="stat-value stat-ground" id="stat-ground">0</span><span class="stat-label">Ground</span></div>
+    </div>
+
+    <div class="sort-bar">
+      <label class="sort-label">Sort by</label>
+      <select id="sort-select" class="settings-select sort-select">
+        <option value="status" selected>Status</option>
+        <option value="reg">Registration</option>
+        <option value="recent">Recent Activity</option>
+      </select>
+    </div>
+
+
+    <!-- Settings panel (hidden by default) -->
+    <div id="settings-panel" class="settings-panel">
+      <div class="settings-group">
+        <label class="settings-label">Poll Interval</label>
+        <div class="settings-row">
+          <input type="range" id="poll-interval" class="settings-range" min="1" max="120" value="5" step="1" />
+          <span id="poll-interval-label" class="settings-value">5s</span>
+        </div>
+      </div>
+      <div class="settings-group">
+        <label class="settings-label">Show Trails</label>
+        <label class="toggle">
+          <input type="checkbox" id="show-trails" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="settings-group">
+        <label class="settings-label">Auto-fit Bounds</label>
+        <label class="toggle">
+          <input type="checkbox" id="auto-fit" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="settings-divider"></div>
+      <div class="settings-group">
+        <label class="settings-label">Telegram Notifications</label>
+        <label class="toggle">
+          <input type="checkbox" id="telegram-enabled" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Favorite Airports section (in sidebar, below settings) -->
+    <div id="fav-section" class="fav-section">
+      <div class="fav-header">
+        <span>⭐ Favorite Airports</span>
+      </div>
+      <div class="fav-add-row">
+        <input type="text" id="fav-airport-input" class="fav-input" placeholder="ICAO (e.g. LLBG)" maxlength="4" />
+        <button id="fav-airport-add" class="fav-add-btn">Add</button>
+      </div>
+      <div id="fav-airport-list" class="fav-list"></div>
+    </div>
+
+
+    <div id="aircraft-list" class="aircraft-list">
+      <div class="empty-state" id="empty-state">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5">
+          <path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
+        </svg>
+        <p>No aircraft tracked</p>
+        <span>Add aircraft below to begin</span>
+      </div>
+    </div>
+
+    <div id="add-panel" class="add-panel">
+      <div class="add-label">Add Aircraft</div>
+      <div class="add-input-row">
+        <input
+          type="text"
+          id="add-input"
+          class="add-input"
+          placeholder="Hex, registration, or flight…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button id="add-btn" class="add-btn" title="Add to watchlist">
+          <svg class="add-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <svg class="spinner-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M12 2a10 10 0 0 1 10 10"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

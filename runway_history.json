@@ -1,0 +1,2456 @@
+{
+  "LLBG": [
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782138803925,
+      "aircraft": "7380c7"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782138948785,
+      "aircraft": "739349"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782139077433,
+      "windDir": 310,
+      "windSpeed": 9,
+      "aircraft": "70e071"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782139213230,
+      "aircraft": "503cc0"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782139356970,
+      "aircraft": "4d2426"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782139480778,
+      "aircraft": "738073"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782139562300,
+      "aircraft": "503fc4"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782139679141,
+      "aircraft": "4c808d"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782139730543,
+      "aircraft": "440bbe"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782139784958,
+      "aircraft": "4c8085"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782140015781,
+      "aircraft": "738069"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782140121606,
+      "aircraft": "738059"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782140226390,
+      "aircraft": "738485"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782140232442,
+      "aircraft": "73806e"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782140412876,
+      "aircraft": "738053"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782140758318,
+      "aircraft": "738054"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782140842976,
+      "aircraft": "89646b"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782140944763,
+      "aircraft": "8965d5"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782141221965,
+      "aircraft": "738061"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782141450768,
+      "aircraft": "73805c"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782141573738,
+      "aircraft": "738052"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782141682593,
+      "aircraft": "738055"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782141965284,
+      "aircraft": "738064"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782142151402,
+      "aircraft": "452199"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782142412690,
+      "aircraft": "4a0481"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782142691954,
+      "aircraft": "49d365"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782142773488,
+      "aircraft": "738057"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782142926297,
+      "aircraft": "738285"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782143224005,
+      "aircraft": "73806a"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782143341321,
+      "aircraft": "4d203d"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782143480013,
+      "aircraft": "738051"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782143585722,
+      "aircraft": "4d214d"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782143996182,
+      "aircraft": "3c45c4"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782144023374,
+      "aircraft": "4d20fb"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782144115991,
+      "aircraft": "73806c"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782144209576,
+      "aircraft": "738289"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782144209577,
+      "aircraft": "503fc5"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782144339423,
+      "aircraft": "738062"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782144447087,
+      "aircraft": "896604"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782144607072,
+      "aircraft": "70e071"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782144610088,
+      "aircraft": "49d034"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782144763034,
+      "aircraft": "738c0b"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782144991441,
+      "aircraft": "738063"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782145174623,
+      "aircraft": "501d0a"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782145457642,
+      "aircraft": "503fc4"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782145556394,
+      "aircraft": "739572"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782145562452,
+      "aircraft": "73806f"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782145971388,
+      "aircraft": "73806e"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782146074224,
+      "aircraft": "738065"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782146197959,
+      "aircraft": "738053"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782146216071,
+      "aircraft": "738060"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782146365737,
+      "aircraft": "7380c3"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782146625032,
+      "aircraft": "5140c6"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782146805112,
+      "aircraft": "8965d5"
+    },
+    {
+      "runway": "21",
+      "type": "ARR",
+      "ts": 1782148388182,
+      "windDir": 310,
+      "windSpeed": 9,
+      "aircraft": "738447"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782153116202,
+      "windDir": 310,
+      "windSpeed": 5,
+      "aircraft": "738072"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782155825985,
+      "windDir": 340,
+      "windSpeed": 4,
+      "aircraft": "738448"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782157512221,
+      "aircraft": "507c96"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782157701382,
+      "aircraft": "4a3123"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782158077703,
+      "aircraft": "46d0a3"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782158464936,
+      "aircraft": "738287"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782158543383,
+      "aircraft": "89642a"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782158638815,
+      "aircraft": "a9c52e"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782158810637,
+      "aircraft": "503fc5"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782159006035,
+      "aircraft": "503cbe"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782159198171,
+      "aircraft": "4a08ec"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782159526378,
+      "aircraft": "503d62"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782159628057,
+      "aircraft": "040184"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782159742858,
+      "aircraft": "738485"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782159806311,
+      "aircraft": "451e90"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782160190855,
+      "aircraft": "73828a"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782160569931,
+      "aircraft": "738056"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782160666394,
+      "aircraft": "738074"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782161177045,
+      "aircraft": "738072"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782161881850,
+      "aircraft": "4c80b4"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782162080544,
+      "aircraft": "738285"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782162257622,
+      "aircraft": "738286"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782162518528,
+      "windDir": "VRB",
+      "windSpeed": 3,
+      "aircraft": "4d214d"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782162729354,
+      "aircraft": "503cc0"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782162831989,
+      "aircraft": "73806b"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782163550853,
+      "aircraft": "4a0484"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782163623249,
+      "aircraft": "46d0a3"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782163770127,
+      "aircraft": "4d24fe"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782164070112,
+      "windDir": "VRB",
+      "windSpeed": 3,
+      "aircraft": "738284"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782164218616,
+      "aircraft": "45217e"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782164398445,
+      "aircraft": "4a08ec"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782164720060,
+      "aircraft": "738058"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782164824315,
+      "windDir": "VRB",
+      "windSpeed": 3,
+      "aircraft": "738076"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782165075149,
+      "aircraft": "4a3122"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782165159499,
+      "aircraft": "14fc25"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782165381612,
+      "aircraft": "7380cb"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782165493243,
+      "aircraft": "738050"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782165838512,
+      "aircraft": "738055"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782165931924,
+      "aircraft": "738062"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782166019361,
+      "aircraft": "738103"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782166126897,
+      "aircraft": "738063"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782166226494,
+      "aircraft": "507c96"
+    },
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782166346216,
+      "aircraft": "738064"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782166445925,
+      "aircraft": "89642a"
+    },
+    {
+      "runway": "26",
+      "type": "DEP",
+      "ts": 1782166547689,
+      "aircraft": "7380c9"
+    }
+  ],
+  "LGKR": [
+    {
+      "runway": "34",
+      "type": "ARR",
+      "ts": 1781981491239,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "70e071"
+    },
+    {
+      "runway": "34",
+      "type": "ARR",
+      "ts": 1781981611324,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "70e071"
+    },
+    {
+      "runway": "16",
+      "type": "DEP",
+      "ts": 1781984917133,
+      "windDir": 360,
+      "windSpeed": 6,
+      "aircraft": "70e071"
+    },
+    {
+      "runway": "34",
+      "type": "ARR",
+      "ts": 1782151650018,
+      "windDir": 20,
+      "windSpeed": 5,
+      "aircraft": "4d214d"
+    }
+  ],
+  "LFPG": [
+    {
+      "runway": "08H",
+      "type": "DEP",
+      "ts": 1782000239397,
+      "windDir": "VRB",
+      "windSpeed": 3,
+      "aircraft": "7380c5"
+    },
+    {
+      "runway": "09R",
+      "type": "DEP",
+      "ts": 1782000256808,
+      "windDir": "VRB",
+      "windSpeed": 3,
+      "aircraft": "7380c5"
+    },
+    {
+      "runway": "08H",
+      "type": "DEP",
+      "ts": 1782010189721,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "738448"
+    },
+    {
+      "runway": "09R",
+      "type": "DEP",
+      "ts": 1782010216629,
+      "windDir": 140,
+      "windSpeed": 4,
+      "aircraft": "738448"
+    },
+    {
+      "runway": "08H",
+      "type": "ARR",
+      "ts": 1782040030046,
+      "windDir": 10,
+      "windSpeed": 4,
+      "aircraft": "469e45"
+    },
+    {
+      "runway": "08H",
+      "type": "ARR",
+      "ts": 1782040150336,
+      "windDir": 10,
+      "windSpeed": 4,
+      "aircraft": "469e45"
+    },
+    {
+      "runway": "09R",
+      "type": "DEP",
+      "ts": 1782045012467,
+      "windDir": 10,
+      "windSpeed": 21,
+      "aircraft": "469e45"
+    },
+    {
+      "runway": "08H",
+      "type": "DEP",
+      "ts": 1782045036612,
+      "windDir": 10,
+      "windSpeed": 21,
+      "aircraft": "469e45"
+    },
+    {
+      "runway": "08H",
+      "type": "ARR",
+      "ts": 1782070894717,
+      "windDir": 40,
+      "windSpeed": 10,
+      "aircraft": "738448"
+    },
+    {
+      "runway": "26H",
+      "type": "ARR",
+      "ts": 1782071017420,
+      "windDir": 40,
+      "windSpeed": 10,
+      "aircraft": "738448"
+    },
+    {
+      "runway": "08H",
+      "type": "ARR",
+      "ts": 1782075565792,
+      "windDir": 40,
+      "windSpeed": 9,
+      "aircraft": "738075"
+    },
+    {
+      "runway": "09R",
+      "type": "ARR",
+      "ts": 1782078588069,
+      "windDir": 50,
+      "windSpeed": 9,
+      "aircraft": "738448"
+    }
+  ],
+  "KJFK": [
+    {
+      "runway": "31R",
+      "type": "DEP",
+      "ts": 1782016828873,
+      "windDir": "VRB",
+      "windSpeed": 2,
+      "aircraft": "738075"
+    },
+    {
+      "runway": "22R",
+      "type": "DEP",
+      "ts": 1782016887001,
+      "windDir": "VRB",
+      "windSpeed": 2,
+      "aircraft": "738075"
+    },
+    {
+      "runway": "13L",
+      "type": "DEP",
+      "ts": 1782016917007,
+      "windDir": "VRB",
+      "windSpeed": 2,
+      "aircraft": "738075"
+    },
+    {
+      "runway": "31R",
+      "type": "ARR",
+      "ts": 1782030619610,
+      "windDir": 240,
+      "windSpeed": 6,
+      "aircraft": "738072"
+    },
+    {
+      "runway": "31R",
+      "type": "ARR",
+      "ts": 1782030739670,
+      "windDir": 240,
+      "windSpeed": 6,
+      "aircraft": "738072"
+    },
+    {
+      "runway": "31R",
+      "type": "ARR",
+      "ts": 1782035017085,
+      "windDir": 250,
+      "windSpeed": 6,
+      "aircraft": "738076"
+    },
+    {
+      "runway": "31R",
+      "type": "ARR",
+      "ts": 1782035137476,
+      "windDir": 250,
+      "windSpeed": 6,
+      "aircraft": "738076"
+    },
+    {
+      "runway": "22R",
+      "type": "ARR",
+      "ts": 1782119164696,
+      "windDir": 80,
+      "windSpeed": 4,
+      "aircraft": "7380c5"
+    },
+    {
+      "runway": "22R",
+      "type": "ARR",
+      "ts": 1782154728944,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "738075"
+    }
+  ],
+  "UGSB": [
+    {
+      "runway": "12",
+      "type": "ARR",
+      "ts": 1782016992082,
+      "windDir": 130,
+      "windSpeed": 6,
+      "aircraft": "738284"
+    },
+    {
+      "runway": "30",
+      "type": "DEP",
+      "ts": 1782022845154,
+      "windDir": "VRB",
+      "windSpeed": 2,
+      "aircraft": "738284"
+    }
+  ],
+  "LGAV": [
+    {
+      "runway": "03L",
+      "type": "ARR",
+      "ts": 1782022605005,
+      "windDir": 20,
+      "windSpeed": 17,
+      "aircraft": "469e45"
+    },
+    {
+      "runway": "03L",
+      "type": "ARR",
+      "ts": 1782022725077,
+      "windDir": 20,
+      "windSpeed": 17,
+      "aircraft": "469e45"
+    },
+    {
+      "runway": "03L",
+      "type": "DEP",
+      "ts": 1782029493936,
+      "windDir": 40,
+      "windSpeed": 5,
+      "aircraft": "469e45"
+    },
+    {
+      "runway": "03L",
+      "type": "ARR",
+      "ts": 1782054717129,
+      "windDir": 10,
+      "windSpeed": 20,
+      "aircraft": "469e45"
+    },
+    {
+      "runway": "03L",
+      "type": "ARR",
+      "ts": 1782079338309,
+      "windDir": 330,
+      "windSpeed": 4,
+      "aircraft": "4d214d"
+    },
+    {
+      "runway": "03L",
+      "type": "ARR",
+      "ts": 1782094173411,
+      "windDir": 360,
+      "windSpeed": 11,
+      "aircraft": "469e45"
+    },
+    {
+      "runway": "03L",
+      "type": "ARR",
+      "ts": 1782110153820,
+      "windDir": 30,
+      "windSpeed": 17,
+      "aircraft": "469e45"
+    },
+    {
+      "runway": "03L",
+      "type": "ARR",
+      "ts": 1782131723582,
+      "windDir": 30,
+      "windSpeed": 19,
+      "aircraft": "738447"
+    },
+    {
+      "runway": "03L",
+      "type": "ARR",
+      "ts": 1782144476145,
+      "windDir": 20,
+      "windSpeed": 15,
+      "aircraft": "469e45"
+    },
+    {
+      "runway": "03L",
+      "type": "ARR",
+      "ts": 1782159450941,
+      "windDir": 360,
+      "windSpeed": 8,
+      "aircraft": "738447"
+    },
+    {
+      "runway": "03L",
+      "type": "ARR",
+      "ts": 1782159870475,
+      "windDir": 360,
+      "windSpeed": 8,
+      "aircraft": "469e45"
+    }
+  ],
+  "VTBS": [
+    {
+      "runway": "19",
+      "type": "ARR",
+      "ts": 1782028713525,
+      "windDir": "VRB",
+      "windSpeed": 3,
+      "aircraft": "7380cc"
+    },
+    {
+      "runway": "19",
+      "type": "DEP",
+      "ts": 1782037898828,
+      "windDir": 290,
+      "windSpeed": 12,
+      "aircraft": "7380cc"
+    }
+  ],
+  "LHBP": [
+    {
+      "runway": "31R",
+      "type": "DEP",
+      "ts": 1782035257198,
+      "windDir": 290,
+      "windSpeed": 10,
+      "aircraft": "49d3bb"
+    },
+    {
+      "runway": "31R",
+      "type": "ARR",
+      "ts": 1782047258303,
+      "windDir": "VRB",
+      "windSpeed": 3,
+      "aircraft": "738284"
+    },
+    {
+      "runway": "31R",
+      "type": "ARR",
+      "ts": 1782108378540,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "49d3bb"
+    },
+    {
+      "runway": "31R",
+      "type": "ARR",
+      "ts": 1782113481194,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "49d3bb"
+    }
+  ],
+  "LGMK": [
+    {
+      "runway": "34",
+      "type": "ARR",
+      "ts": 1782039159577,
+      "windDir": 340,
+      "windSpeed": 21,
+      "aircraft": "738448"
+    },
+    {
+      "runway": "34",
+      "type": "ARR",
+      "ts": 1782039279578,
+      "windDir": 340,
+      "windSpeed": 21,
+      "aircraft": "738448"
+    },
+    {
+      "runway": "34",
+      "type": "DEP",
+      "ts": 1782044288357,
+      "windDir": 330,
+      "windSpeed": 11,
+      "aircraft": "738448"
+    }
+  ],
+  "EGLL": [
+    {
+      "runway": "09L",
+      "type": "ARR",
+      "ts": 1782043763430,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "7380c5"
+    },
+    {
+      "runway": "09L",
+      "type": "ARR",
+      "ts": 1782043886023,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "7380c5"
+    }
+  ],
+  "IL-0007": [
+    {
+      "runway": "36",
+      "type": "DEP",
+      "ts": 1782045202561,
+      "aircraft": "89642a"
+    },
+    {
+      "runway": "36",
+      "type": "DEP",
+      "ts": 1782046515864,
+      "aircraft": "04016a"
+    },
+    {
+      "runway": "36",
+      "type": "DEP",
+      "ts": 1782049698709,
+      "aircraft": "7395af"
+    },
+    {
+      "runway": "18",
+      "type": "ARR",
+      "ts": 1782049786136,
+      "aircraft": "7395af"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782054522183,
+      "aircraft": "896516"
+    },
+    {
+      "runway": "36",
+      "type": "ARR",
+      "ts": 1782055755529,
+      "aircraft": "739493"
+    },
+    {
+      "runway": "36",
+      "type": "DEP",
+      "ts": 1782056580824,
+      "aircraft": "7395a2"
+    },
+    {
+      "runway": "36",
+      "type": "DEP",
+      "ts": 1782057503558,
+      "aircraft": "7395af"
+    },
+    {
+      "runway": "18",
+      "type": "ARR",
+      "ts": 1782057578873,
+      "aircraft": "7395af"
+    },
+    {
+      "runway": "36",
+      "type": "ARR",
+      "ts": 1782058149490,
+      "aircraft": "7395a2"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782060833564,
+      "aircraft": "896514"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782061152046,
+      "aircraft": "424c03"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782063074018,
+      "aircraft": "896678"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782064744575,
+      "aircraft": "8965cf"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782067010006,
+      "aircraft": "738485"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782097255697,
+      "aircraft": "739349"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782099117292,
+      "aircraft": "7395af"
+    },
+    {
+      "runway": "36",
+      "type": "ARR",
+      "ts": 1782099523596,
+      "aircraft": "7395af"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782100233291,
+      "aircraft": "738488"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782101782565,
+      "aircraft": "8966aa"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782102997806,
+      "aircraft": "7395a2"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782105415447,
+      "aircraft": "896677"
+    },
+    {
+      "runway": "36",
+      "type": "DEP",
+      "ts": 1782107204571,
+      "aircraft": "7395af"
+    },
+    {
+      "runway": "36",
+      "type": "ARR",
+      "ts": 1782107532088,
+      "aircraft": "7395af"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782107625806,
+      "aircraft": "040238"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782108951708,
+      "aircraft": "738287"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782112058295,
+      "aircraft": "738488"
+    },
+    {
+      "runway": "36",
+      "type": "DEP",
+      "ts": 1782134849598,
+      "aircraft": "7395a2"
+    },
+    {
+      "runway": "18",
+      "type": "ARR",
+      "ts": 1782136536953,
+      "aircraft": "7395af"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782136856528,
+      "aircraft": "7395af"
+    },
+    {
+      "runway": "18",
+      "type": "ARR",
+      "ts": 1782140539887,
+      "aircraft": "7395af"
+    },
+    {
+      "runway": "36",
+      "type": "DEP",
+      "ts": 1782140852069,
+      "aircraft": "7395af"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782161231314,
+      "aircraft": "738072"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782166072588,
+      "aircraft": "738103"
+    },
+    {
+      "runway": "18",
+      "type": "DEP",
+      "ts": 1782166491252,
+      "aircraft": "89642a"
+    }
+  ],
+  "LLHA": [
+    {
+      "runway": "33",
+      "type": "ARR",
+      "ts": 1782054311058,
+      "windDir": 320,
+      "windSpeed": 12,
+      "aircraft": "739602"
+    },
+    {
+      "runway": "33",
+      "type": "ARR",
+      "ts": 1782054433764,
+      "windDir": 320,
+      "windSpeed": 12,
+      "aircraft": "739602"
+    },
+    {
+      "runway": "33",
+      "type": "ARR",
+      "ts": 1782065760914,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "739605"
+    },
+    {
+      "runway": "15",
+      "type": "ARR",
+      "ts": 1782114286231,
+      "windDir": 250,
+      "windSpeed": 6,
+      "aircraft": "739604"
+    },
+    {
+      "runway": "33",
+      "type": "ARR",
+      "ts": 1782114407187,
+      "windDir": 250,
+      "windSpeed": 6,
+      "aircraft": "739604"
+    },
+    {
+      "runway": "33",
+      "type": "ARR",
+      "ts": 1782120588797,
+      "windDir": 270,
+      "windSpeed": 8,
+      "aircraft": "739601"
+    },
+    {
+      "runway": "33",
+      "type": "ARR",
+      "ts": 1782127200630,
+      "windDir": 290,
+      "windSpeed": 10,
+      "aircraft": "739604"
+    },
+    {
+      "runway": "33",
+      "type": "ARR",
+      "ts": 1782129741181,
+      "windDir": 290,
+      "windSpeed": 10,
+      "aircraft": "739605"
+    },
+    {
+      "runway": "33",
+      "type": "ARR",
+      "ts": 1782133531441,
+      "windDir": 300,
+      "windSpeed": 11,
+      "aircraft": "739601"
+    },
+    {
+      "runway": "33",
+      "type": "ARR",
+      "ts": 1782140243598,
+      "windDir": 320,
+      "windSpeed": 10,
+      "aircraft": "739604"
+    },
+    {
+      "runway": "33",
+      "type": "ARR",
+      "ts": 1782142099142,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "739605"
+    }
+  ],
+  "LCPH": [
+    {
+      "runway": "29",
+      "type": "ARR",
+      "ts": 1782060438602,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "4d214d"
+    },
+    {
+      "runway": "29",
+      "type": "ARR",
+      "ts": 1782123473098,
+      "windDir": 280,
+      "windSpeed": 12,
+      "aircraft": "739605"
+    },
+    {
+      "runway": "29",
+      "type": "ARR",
+      "ts": 1782133999999,
+      "windDir": 280,
+      "windSpeed": 12,
+      "aircraft": "739604"
+    },
+    {
+      "runway": "29",
+      "type": "ARR",
+      "ts": 1782134120015,
+      "windDir": 280,
+      "windSpeed": 12,
+      "aircraft": "739604"
+    }
+  ],
+  "LIRF": [
+    {
+      "runway": "16L",
+      "type": "ARR",
+      "ts": 1782063694248,
+      "windDir": 280,
+      "windSpeed": 10,
+      "aircraft": "49d3bb"
+    },
+    {
+      "runway": "16L",
+      "type": "ARR",
+      "ts": 1782063817236,
+      "windDir": 280,
+      "windSpeed": 10,
+      "aircraft": "49d3bb"
+    },
+    {
+      "runway": "07",
+      "type": "ARR",
+      "ts": 1782063937350,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "49d3bb"
+    }
+  ],
+  "EPWA": [
+    {
+      "runway": "33",
+      "type": "ARR",
+      "ts": 1782065627817,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "4521ba"
+    },
+    {
+      "runway": "33",
+      "type": "ARR",
+      "ts": 1782149024425,
+      "windDir": 320,
+      "windSpeed": 10,
+      "aircraft": "4521ba"
+    }
+  ],
+  "LPPT": [
+    {
+      "runway": "02",
+      "type": "ARR",
+      "ts": 1782075282011,
+      "windDir": 340,
+      "windSpeed": 7,
+      "aircraft": "469e45"
+    }
+  ],
+  "LATI": [
+    {
+      "runway": "17",
+      "type": "ARR",
+      "ts": 1782081227758,
+      "windDir": "VRB",
+      "windSpeed": 2,
+      "aircraft": "70e071"
+    },
+    {
+      "runway": "17",
+      "type": "ARR",
+      "ts": 1782086288387,
+      "windDir": "VRB",
+      "windSpeed": 2,
+      "aircraft": "70e071"
+    }
+  ],
+  "LLEK": [
+    {
+      "runway": "15L",
+      "type": "DEP",
+      "ts": 1782103476242,
+      "aircraft": "7395a2"
+    },
+    {
+      "runway": "33R",
+      "type": "DEP",
+      "ts": 1782135033746,
+      "aircraft": "7395af"
+    },
+    {
+      "runway": "15L",
+      "type": "DEP",
+      "ts": 1782135262033,
+      "aircraft": "7395a2"
+    }
+  ],
+  "LGRP": [
+    {
+      "runway": "24",
+      "type": "ARR",
+      "ts": 1782103845081,
+      "windDir": 230,
+      "windSpeed": 5,
+      "aircraft": "469e45"
+    },
+    {
+      "runway": "24",
+      "type": "ARR",
+      "ts": 1782111936401,
+      "windDir": 240,
+      "windSpeed": 4,
+      "aircraft": "738447"
+    },
+    {
+      "runway": "24",
+      "type": "ARR",
+      "ts": 1782130053665,
+      "windDir": 260,
+      "windSpeed": 10,
+      "aircraft": "70e071"
+    },
+    {
+      "runway": "06",
+      "type": "ARR",
+      "ts": 1782130175595,
+      "windDir": 260,
+      "windSpeed": 10,
+      "aircraft": "70e071"
+    }
+  ],
+  "LCLK": [
+    {
+      "runway": "22",
+      "type": "ARR",
+      "ts": 1782108270703,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "739604"
+    },
+    {
+      "runway": "22",
+      "type": "ARR",
+      "ts": 1782108391607,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "739604"
+    },
+    {
+      "runway": "22",
+      "type": "ARR",
+      "ts": 1782114126050,
+      "windDir": 170,
+      "windSpeed": 5,
+      "aircraft": "739601"
+    },
+    {
+      "runway": "22",
+      "type": "ARR",
+      "ts": 1782114246947,
+      "windDir": 170,
+      "windSpeed": 5,
+      "aircraft": "739601"
+    },
+    {
+      "runway": "22",
+      "type": "ARR",
+      "ts": 1782119790619,
+      "windDir": 130,
+      "windSpeed": 7,
+      "aircraft": "739604"
+    },
+    {
+      "runway": "22",
+      "type": "ARR",
+      "ts": 1782124310488,
+      "windDir": 160,
+      "windSpeed": 11,
+      "aircraft": "739604"
+    },
+    {
+      "runway": "22",
+      "type": "ARR",
+      "ts": 1782126369331,
+      "windDir": 160,
+      "windSpeed": 11,
+      "aircraft": "739601"
+    },
+    {
+      "runway": "22",
+      "type": "ARR",
+      "ts": 1782126490207,
+      "windDir": 160,
+      "windSpeed": 11,
+      "aircraft": "739601"
+    },
+    {
+      "runway": "22",
+      "type": "ARR",
+      "ts": 1782135951565,
+      "windDir": 210,
+      "windSpeed": 15,
+      "aircraft": "739605"
+    },
+    {
+      "runway": "22",
+      "type": "ARR",
+      "ts": 1782136072314,
+      "windDir": 210,
+      "windSpeed": 15,
+      "aircraft": "739605"
+    },
+    {
+      "runway": "22",
+      "type": "ARR",
+      "ts": 1782146969083,
+      "windDir": 220,
+      "windSpeed": 12,
+      "aircraft": "70e071"
+    },
+    {
+      "runway": "22",
+      "type": "ARR",
+      "ts": 1782147089702,
+      "windDir": 220,
+      "windSpeed": 12,
+      "aircraft": "70e071"
+    }
+  ],
+  "EGGW": [
+    {
+      "runway": "07",
+      "type": "ARR",
+      "ts": 1782142207719,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "738284"
+    },
+    {
+      "runway": "07",
+      "type": "ARR",
+      "ts": 1782142328315,
+      "windDir": null,
+      "windSpeed": null,
+      "aircraft": "738284"
+    }
+  ],
+  "LEBL": [
+    {
+      "runway": "24R",
+      "type": "ARR",
+      "ts": 1782142786662,
+      "windDir": 220,
+      "windSpeed": 11,
+      "aircraft": "49d3bb"
+    }
+  ],
+  "KSFO": [
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782151922162,
+      "aircraft": "a18cbb"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782152069366,
+      "aircraft": "ac04c5"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782152084485,
+      "aircraft": "aab187"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782152108675,
+      "aircraft": "a1d76b"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782152205482,
+      "aircraft": "ab0ed6"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782152241783,
+      "aircraft": "aa7f23"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782152277081,
+      "aircraft": "c05ee5"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782152301277,
+      "aircraft": "ab2169"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782152358753,
+      "aircraft": "a43ea3"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782152413207,
+      "aircraft": "a1ce16"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782152460600,
+      "aircraft": "a923cd"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782152466654,
+      "aircraft": "a071c2"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782152530189,
+      "aircraft": "aac8a4"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782152622945,
+      "aircraft": "a58103"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782152665289,
+      "aircraft": "a0817c"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782152722769,
+      "aircraft": "abe80e"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782152725795,
+      "aircraft": "a92d6d"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782152774182,
+      "aircraft": "ad2445"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782152860929,
+      "aircraft": "a2b919"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782152930501,
+      "aircraft": "a61b4e"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782152933528,
+      "aircraft": "a1242d"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782152972885,
+      "aircraft": "aaa621"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782152972886,
+      "aircraft": "acf54f"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782153044483,
+      "aircraft": "a55b3c"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782153092895,
+      "aircraft": "ad0074"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782153104997,
+      "aircraft": "aa998e"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782153135262,
+      "aircraft": "ab1db2"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782153144340,
+      "aircraft": "a3d302"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782153237087,
+      "aircraft": "ad953c"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782153279455,
+      "aircraft": "a4493d"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782153285503,
+      "aircraft": "a5d28c"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782153309711,
+      "aircraft": "a66244"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782153330880,
+      "aircraft": "485b45"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782153414536,
+      "aircraft": "ad4528"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782153465956,
+      "aircraft": "ac7a5b"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782153465956,
+      "aircraft": "ad854a"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782153508315,
+      "aircraft": "86e496"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782153616179,
+      "aircraft": "8004e0"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782153661578,
+      "aircraft": "a1878a"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782153700873,
+      "aircraft": "ac04c6"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782153722039,
+      "aircraft": "abb5e9"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782153805719,
+      "aircraft": "a1f90e"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782153851086,
+      "aircraft": "a7df61"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782153902501,
+      "aircraft": "a1efe7"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782153905527,
+      "aircraft": "a0fbb7"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782153989210,
+      "aircraft": "a0428a"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782154037595,
+      "aircraft": "a09fc4"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782154151536,
+      "aircraft": "c08081"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782154196901,
+      "aircraft": "a6594f"
+    },
+    {
+      "runway": "1L",
+      "type": "DEP",
+      "ts": 1782154236225,
+      "aircraft": "a37394"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782154239246,
+      "aircraft": "ab8112"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782154365271,
+      "aircraft": "a7fbbb"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782154535323,
+      "aircraft": "a3b3e5"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782154582708,
+      "aircraft": "a85fb8"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782154679496,
+      "aircraft": "a44c70"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782154715724,
+      "aircraft": "abe1c2"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782154757067,
+      "aircraft": "a8ec03"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782154757068,
+      "aircraft": "a02413"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782154859903,
+      "aircraft": "76cdb6"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782154871979,
+      "aircraft": "a76f48"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782154970785,
+      "aircraft": "c012a7"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782155001034,
+      "aircraft": "a1373d"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782155025256,
+      "aircraft": "abb5ec"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782155130160,
+      "aircraft": "ac72f7"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782155148308,
+      "aircraft": "a1a2a2"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782155266287,
+      "aircraft": "ab5f87"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782155302561,
+      "aircraft": "a553ce"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782155302562,
+      "aircraft": "aa9220"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782155337867,
+      "aircraft": "aa3ae5"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782155464960,
+      "aircraft": "71c702"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782155509304,
+      "aircraft": "0d0707"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782155581907,
+      "aircraft": "780560"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782155587956,
+      "aircraft": "a1cdd8"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782155707957,
+      "aircraft": "a3661f"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782155723086,
+      "aircraft": "a13af4"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782155765441,
+      "aircraft": "a445ad"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782155810821,
+      "aircraft": "a53d2c"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782155921714,
+      "aircraft": "abe075"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782155924737,
+      "aircraft": "a7124e"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782155982225,
+      "aircraft": "a2b150"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782156030632,
+      "aircraft": "a0cdf3"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782156056844,
+      "aircraft": "a5ea5c"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782156108259,
+      "aircraft": "c820d1"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782156243372,
+      "aircraft": "a2b83b"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782156243373,
+      "aircraft": "aa77c0"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782156297818,
+      "aircraft": "394a06"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782156429924,
+      "aircraft": "abad94"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782156451115,
+      "aircraft": "a2b4ea"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782156469262,
+      "aircraft": "a12ac5"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782156499512,
+      "aircraft": "8682da"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782156592861,
+      "aircraft": "a47303"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782156623039,
+      "aircraft": "a2bc12"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782156656184,
+      "aircraft": "aa998e"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782156712513,
+      "aircraft": "c06183"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782156721570,
+      "aircraft": "a12f07"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782156769859,
+      "aircraft": "aa56b3"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782156824158,
+      "aircraft": "a11f9d"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782156833229,
+      "aircraft": "acf48f"
+    },
+    {
+      "runway": "28R",
+      "type": "ARR",
+      "ts": 1782156875505,
+      "aircraft": "aa7ec3"
+    },
+    {
+      "runway": "28R",
+      "type": "DEP",
+      "ts": 1782156881554,
+      "aircraft": "a94d16"
+    }
+  ],
+  "US-8689": [
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782146994194,
+      "aircraft": "a12735"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782147168926,
+      "aircraft": "a3dc34"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782148543360,
+      "aircraft": "a697db"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782148612969,
+      "aircraft": "ad50c9"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782148835796,
+      "aircraft": "a9ec06"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782149087909,
+      "aircraft": "ad9e73"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782149665665,
+      "aircraft": "a441ac"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782150435876,
+      "aircraft": "a97dcb"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782150652603,
+      "aircraft": "aaac21"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782150986364,
+      "aircraft": "a3f4d7"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782151245621,
+      "aircraft": "a0dae2"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782151429174,
+      "aircraft": "aa7426"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782151515880,
+      "aircraft": "a37d8a"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782151952424,
+      "aircraft": "a61d00"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782152120773,
+      "aircraft": "aab187"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782152241783,
+      "aircraft": "ab0ed6"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782152340606,
+      "aircraft": "ab2169"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782152442461,
+      "aircraft": "a1ce16"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782152710671,
+      "aircraft": "a0817c"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782153008181,
+      "aircraft": "aaa621"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782153132237,
+      "aircraft": "ad0074"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782153267346,
+      "aircraft": "ad953c"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782153349033,
+      "aircraft": "a66244"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782153499236,
+      "aircraft": "ac7a5b"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782154028536,
+      "aircraft": "a0428a"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782154187833,
+      "aircraft": "c08081"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782155061573,
+      "aircraft": "abb5ec"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782155337867,
+      "aircraft": "a553ce"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782155756365,
+      "aircraft": "a3661f"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782155850132,
+      "aircraft": "a53d2c"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782155961053,
+      "aircraft": "a7124e"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782156068942,
+      "aircraft": "a0cdf3"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782156490450,
+      "aircraft": "a2b4ea"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782156656184,
+      "aircraft": "a2bc12"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782156757797,
+      "aircraft": "a12f07"
+    },
+    {
+      "runway": "H1",
+      "type": "DEP",
+      "ts": 1782156875504,
+      "aircraft": "a11f9d"
+    }
+  ],
+  "LGTS": [
+    {
+      "runway": "16",
+      "type": "ARR",
+      "ts": 1782153083899,
+      "windDir": 160,
+      "windSpeed": 11,
+      "aircraft": "469e45"
+    }
+  ],
+  "LKPR": [
+    {
+      "runway": "30",
+      "type": "ARR",
+      "ts": 1782158417793,
+      "windDir": 40,
+      "windSpeed": 6,
+      "aircraft": "49d3bb"
+    }
+  ]
+}
