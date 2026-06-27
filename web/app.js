@@ -1825,11 +1825,6 @@
       }
     }
 
-    // Restore Telegram toggle state from server
-    if (typeof msg.telegramEnabled === 'boolean') {
-      const $tg = document.getElementById('telegram-enabled');
-      if ($tg) $tg.checked = msg.telegramEnabled;
-    }
   }
 
   // ============================================================
@@ -2164,18 +2159,6 @@
     });
 
 
-    // ---- Telegram toggle ----
-    const $telegramEnabled = document.getElementById('telegram-enabled');
-    $telegramEnabled.addEventListener('change', async () => {
-      const on = $telegramEnabled.checked;
-      try {
-        await fetch(`${API_BASE}/api/telegram`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ enabled: on }),
-        });
-      } catch (e) { console.warn('Failed to toggle telegram:', e); }
-    });
 
     // ---- Phone Push Notifications ----
     const $pushBtn = document.getElementById('push-subscribe-btn');

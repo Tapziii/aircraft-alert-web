@@ -47,80 +47,80 @@ async function getDB() {
 // Attempt initial connection
 getDB();
 
-// ── Config ──
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const POLL_INTERVAL = (parseInt(process.env.POLL_INTERVAL) || 5) * 1000;
 const PORT = parseInt(process.env.PORT) || 3000;
 const DATA_FILE = path.join(__dirname, 'data.json');
 const AVIATIONSTACK_KEY = process.env.AVIATIONSTACK_KEY || 'e36095542d0605cb445eadd7c2204673';
 const WEB_DIR = path.join(__dirname, 'web');
-
-if (!BOT_TOKEN) {
-  console.error('❌ TELEGRAM_BOT_TOKEN not set. Copy .env.example to .env and add your token.');
-  process.exit(1);
-}
-
-// ── Persistence ──
-function loadData() {
-  try {
-    if (fs.existsSync(DATA_FILE)) {
-      const raw = fs.readFileSync(DATA_FILE, 'utf8');
-      return JSON.parse(raw);
-    }
-  } catch (e) {
-    console.error('Failed to load data.json:', e.message);
+// ── Persistence (MongoDB) ──
+async function loadConfig() {
+  const database = await getDB();
+  if (!database) {
+    console.warn('⚠️ No database, loading empty config');
+    return {};
   }
-  return {};
-}
-
-function saveData() {
   try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify({
-      watchlist,
-      chatId: CHAT_ID,
-      routeCache,
-      telegramOffset,
-      telegramEnabled,
-      geofence: {
-        enabled: geofence.enabled,
-        lat: geofence.lat,
-        lon: geofence.lon,
-        radiusNm: geofence.radiusNm,
-      },
-      removedIcaos: [...removedIcaos],
-      favoriteAirports,
-      lastSeenMap,
-    }, null, 2));
+    const doc = await database.collection('config').findOne({ _id: 'global' });
+    return doc || {};
   } catch (e) {
-    console.error('Failed to save data.json:', e.message);
+    console.error('Failed to load config from MongoDB:', e.message);
+    return {};
   }
 }
 
-// ── State (loaded from disk) ──
-const saved = loadData();
-let watchlist = saved.watchlist || [];
-let CHAT_ID = saved.chatId || process.env.TELEGRAM_CHAT_ID || null;
-let routeCache = saved.routeCache || {};
-let telegramOffset = saved.telegramOffset || 0;
-let lastSeenMap = saved.lastSeenMap || {}; // icao -> epoch seconds (persisted)
+async function saveConfig() {
+  const database = await getDB();
+  if (!database) return;
+  try {
+    await database.collection('config').updateOne(
+      { _id: 'global' },
+      { $set: {
+          watchlist,
+          routeCache,
+          geofence: {
+            enabled: geofence.enabled,
+            lat: geofence.lat,
+            lon: geofence.lon,
+            radiusNm: geofence.radiusNm,
+          },
+          removedIcaos: Array.from(removedIcaos),
+          favoriteAirports,
+          lastSeenMap,
+      }},
+      { upsert: true }
+    );
+  } catch (e) {
+    console.error('Failed to save config to MongoDB:', e.message);
+  }
+}
+
+let saveTimer = null;
+function saveDataDebounced() {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => saveConfig(), 2000);
+}
+
+// ── State (loaded from db in main) ──
+let watchlist = [];
+let routeCache = {};
+let lastSeenMap = {};
 let aircraftState = {};
-let nearbyCallsigns = {}; // hex -> {callsign} from geofence nearby aircraft
-let trailData = {}; // icao -> [{lat, lon, ts}]
+let nearbyCallsigns = {};
+let trailData = {};
 let pollTimer = null;
-const removedIcaos = new Set(saved.removedIcaos || []); // ICAOs removed via web/bot, blocks re-add from extension sync
-let telegramEnabled = saved.telegramEnabled !== false; // default ON
-let favoriteAirports = saved.favoriteAirports || []; // ICAO codes always shown on map
+let removedIcaos = new Set();
+let favoriteAirports = [];
 let geofence = {
-  enabled: saved.geofence?.enabled || false,
-  lat: saved.geofence?.lat ?? 32.0,
-  lon: saved.geofence?.lon ?? 34.9,
-  radiusNm: saved.geofence?.radiusNm ?? 25,
+  enabled: false,
+  lat: 32.0,
+  lon: 34.9,
+  radiusNm: 25,
   seenIcaos: new Set(),
 };
-const weatherCache = {}; // ICAO code -> { metar, taf, ts }
-const speedHistory = {}; // icao -> [last N groundspeeds]
-let sourceRotationIndex = 0; // Round-robin index for fast ADS-B polling
-let geofenceRotationIndex = 0; // Round-robin index for fast geofence polling
+const weatherCache = {};
+const speedHistory = {};
+let sourceRotationIndex = 0;
+let geofenceRotationIndex = 0;
 
 // ── Runway Database ──
 let runwayDB = {};
@@ -177,10 +177,13 @@ function getRunways(icao) {
     const leOk = rw.le && !ignored.includes(rw.le);
     const heOk = rw.he && !ignored.includes(rw.he);
     if (!leOk && !heOk) continue; // both ends ignored, skip
-    result.push({
-      le: leOk ? rw.le : null, lh: leOk ? rw.lh : null,
-      he: heOk ? rw.he : null, hh: heOk ? rw.hh : null,
-    });
+    
+    // clone and strip ignored ends so the prediction algorithm never sees them
+    const safeRw = { ...rw };
+    if (!leOk) { delete safeRw.le; delete safeRw.lh; }
+    if (!heOk) { delete safeRw.he; delete safeRw.hh; }
+    
+    result.push(safeRw);
   }
   return result;
 }
@@ -241,25 +244,6 @@ function findNearestAirports(lat, lon, radiusNm, maxCount = 3) {
   return results.slice(0, maxCount);
 }
 
-// ── Telegram API ──
-async function tg(method, body = {}) {
-  const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/${method}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  return res.json();
-}
-
-async function sendMessage(text, parseMode = 'HTML') {
-  if (!CHAT_ID || !telegramEnabled) return;
-  try {
-    await tg('sendMessage', { chat_id: CHAT_ID, text, parse_mode: parseMode, disable_web_page_preview: true });
-  } catch (e) {
-    console.error('Failed to send Telegram message:', e.message);
-  }
-}
-
 async function sendPushNotification(title, bodyText) {
   const database = await getDB();
   if (!database || !process.env.VAPID_PUBLIC_KEY) return;
@@ -282,86 +266,10 @@ async function sendPushNotification(title, bodyText) {
   }
 }
 
-// ── Telegram Command Polling ──
-async function pollTelegram() {
-  try {
-    const data = await tg('getUpdates', { offset: telegramOffset, timeout: 5 });
-    if (!data.ok || !data.result) return;
-
-    for (const update of data.result) {
-      telegramOffset = update.update_id + 1;
-      const msg = update.message;
-      if (!msg || !msg.text) continue;
-
-      const chatId = msg.chat.id;
-      const text = msg.text.trim();
-
-      if (text === '/start') {
-        CHAT_ID = String(chatId);
-        saveData();
-        console.log(`✅ Chat ID set: ${CHAT_ID}`);
-        await tg('sendMessage', {
-          chat_id: chatId,
-          text: '✅ <b>Aircraft Alert Bot connected!</b>\n\nYou will receive notifications when tracked aircraft:\n✈️ Appear on radar\n🛫 Take off\n🛬 Land\n📡 Go off-radar\n\nCommands:\n/status — Current aircraft states\n/list — Show watchlist\n/add &lt;hex&gt; — Add aircraft by ICAO hex\n/remove &lt;hex&gt; — Remove aircraft',
-          parse_mode: 'HTML',
-        });
-      } else if (text === '/status') {
-        await handleStatus(chatId);
-      } else if (text === '/list') {
-        await handleList(chatId);
-      } else if (text.startsWith('/add ')) {
-        await handleAdd(chatId, text.slice(5).trim());
-      } else if (text.startsWith('/remove ')) {
-        await handleRemove(chatId, text.slice(8).trim());
-      }
-    }
-  } catch (e) {}
-}
-
-async function handleStatus(chatId) {
-  if (watchlist.length === 0) {
-    await tg('sendMessage', { chat_id: chatId, text: '📋 Watchlist is empty.', parse_mode: 'HTML' });
-    return;
-  }
-
-  const lines = watchlist.map(item => {
-    const icao = (item.icao24 || '').toLowerCase();
-    const state = aircraftState[icao];
-    const reg = item.registration || icao.toUpperCase();
-    
-    if (!state || state.status === 'Unknown') {
-      const dest = state?.last_destination && state.last_destination !== 'N/A'
-        ? ` · Landed: ${state.last_destination}` : '';
-      return `○ <b>${reg}</b> — No Signal${dest}`;
-    }
-    
-    const status = state.on_ground ? '◻ Ground' : '● Airborne';
-    const alt = state.altitude && !state.on_ground ? ` · ${Number(state.altitude).toLocaleString()} ft` : '';
-    const cs = state.callsign ? ` · ${state.callsign}` : '';
-    const route = state.origin && state.destination ? `\n   ${state.origin} → ${state.destination}` : '';
-    
-    return `${state.on_ground ? '◻' : '●'} <b>${reg}</b>${cs}${alt}${route}`;
-  });
-
-  await tg('sendMessage', { chat_id: chatId, text: lines.join('\n\n'), parse_mode: 'HTML' });
-}
-
-async function handleList(chatId) {
-  if (watchlist.length === 0) {
-    await tg('sendMessage', { chat_id: chatId, text: '📋 Watchlist is empty.', parse_mode: 'HTML' });
-    return;
-  }
-  const lines = watchlist.map(item => {
-    const reg = item.registration || item.icao24?.toUpperCase();
-    return `• <b>${reg}</b> — <code>${(item.icao24 || '').toUpperCase()}</code>`;
-  });
-  await tg('sendMessage', { chat_id: chatId, text: `📋 <b>Watchlist (${watchlist.length}):</b>\n\n${lines.join('\n')}`, parse_mode: 'HTML' });
-}
-
-async function handleAdd(chatId, input) {
+async function handleAdd(input) {
   const normalized = input.trim().replace(/[-\s]/g, '').toUpperCase();
   if (!normalized) {
-    if (chatId) await tg('sendMessage', { chat_id: chatId, text: '❌ Usage: /add &lt;registration, hex, or flight number&gt;', parse_mode: 'HTML' });
+
     return;
   }
 
@@ -373,8 +281,6 @@ async function handleAdd(chatId, input) {
   let finalIcao = null;
   let finalReg = null;
   let details = {};
-
-  if (chatId) await tg('sendMessage', { chat_id: chatId, text: `🔍 Looking up <b>${input.trim()}</b>...`, parse_mode: 'HTML' });
 
   // Helper: try a live ADS-B lookup, return { hex, reg, model } or null
   async function tryLive(url) {
@@ -575,13 +481,13 @@ async function handleAdd(chatId, input) {
   }
 
   if (!finalIcao) {
-    if (chatId) await tg('sendMessage', { chat_id: chatId, text: `❌ Could not find <b>${input.trim()}</b>`, parse_mode: 'HTML' });
+
     return { ok: false, error: 'Not found' };
   }
 
   // Check duplicate
   if (watchlist.find(w => (w.icao24 || '').toLowerCase() === finalIcao)) {
-    if (chatId) await tg('sendMessage', { chat_id: chatId, text: `⚠️ <b>${finalReg}</b> already in watchlist`, parse_mode: 'HTML' });
+
     removedIcaos.delete(finalIcao); // Allow sync to keep it
     return { ok: true, duplicate: true };
   }
@@ -591,13 +497,11 @@ async function handleAdd(chatId, input) {
   watchlist.push(entry);
   saveData();
 
-  if (chatId) await tg('sendMessage', { chat_id: chatId, text: `✅ Added <b>${finalReg}</b> (<code>${finalIcao.toUpperCase()}</code>)${details.model ? '\n✈️ ' + details.model : ''}${details.operator ? '\n🏢 ' + details.operator : ''}`, parse_mode: 'HTML' });
-  
   broadcastState(); // Push update to web clients
   return { ok: true, entry };
 }
 
-async function handleRemove(chatId, input) {
+async function handleRemove(input) {
   const hex = input.trim().replace(/[-\s]/g, '').toLowerCase();
   const before = watchlist.length;
   // Collect ICAOs being removed so sync won't re-add them
@@ -618,11 +522,11 @@ async function handleRemove(chatId, input) {
       removedIcaos.add(icao); // Block re-add from extension sync
     });
     saveData();
-    if (chatId) await tg('sendMessage', { chat_id: chatId, text: `✅ Removed <code>${hex.toUpperCase()}</code>`, parse_mode: 'HTML' });
+
     broadcastState();
     return { ok: true };
   } else {
-    if (chatId) await tg('sendMessage', { chat_id: chatId, text: '❌ Not found in watchlist.', parse_mode: 'HTML' });
+
     return { ok: false, error: 'Not found' };
   }
 }
@@ -1934,11 +1838,6 @@ async function pollGeofence() {
           ? haversineNm(geofence.lat, geofence.lon, ac.lat, ac.lon)
           : 0;
 
-        // Telegram notification
-        await sendMessage(
-          `✈️ <b>${reg}</b>${callsign ? ' (' + callsign + ')' : ''} entered radius\n📍 ${alt}ft, ${Math.round(distance)}nm from center`
-        );
-
         // WebSocket alert (new entry toast)
         const alertMsg = JSON.stringify({
           type: 'geofence_alert',
@@ -2053,7 +1952,6 @@ function broadcastState() {
     },
     weather: Object.keys(weather).length > 0 ? weather : undefined,
     runwayHistory: runwayHistory,
-    telegramEnabled: telegramEnabled,
     favoriteAirports: favoriteAirports,
     favAirportCoords: favAirportCoords,
     ts: Date.now(),
@@ -2491,23 +2389,6 @@ ${text}`;
       return;
     }
 
-    // GET /api/telegram — current state
-    if (req.method === 'GET' && req.url === '/api/telegram') {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ enabled: telegramEnabled }));
-      return;
-    }
-
-    // POST /api/telegram — toggle
-    if (req.method === 'POST' && req.url === '/api/telegram') {
-      let body = '';
-      req.on('data', c => body += c);
-      req.on('end', () => {
-        try {
-          const { enabled } = JSON.parse(body);
-          if (typeof enabled === 'boolean') {
-            telegramEnabled = enabled;
-            saveData();
             console.log(`📱 Telegram notifications: ${enabled ? 'ON' : 'OFF'}`);
           }
           res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -2646,6 +2527,21 @@ ${text}`;
 // ── Main ──
 async function main() {
   console.log('🤖 Aircraft Alert Server starting...');
+  
+  // Load config from MongoDB
+  const saved = await loadConfig();
+  watchlist = saved.watchlist || [];
+  routeCache = saved.routeCache || {};
+  lastSeenMap = saved.lastSeenMap || {};
+  if (saved.removedIcaos) removedIcaos = new Set(saved.removedIcaos);
+  favoriteAirports = saved.favoriteAirports || [];
+  if (saved.geofence) {
+    geofence.enabled = saved.geofence.enabled || false;
+    geofence.lat = saved.geofence.lat ?? 32.0;
+    geofence.lon = saved.geofence.lon ?? 34.9;
+    geofence.radiusNm = saved.geofence.radiusNm ?? 25;
+  }
+
   console.log(`📡 Polling every ${POLL_INTERVAL / 1000}s`);
   console.log(`🌐 Web UI + API on port ${PORT}`);
 
@@ -2685,9 +2581,6 @@ async function main() {
     });
   });
 
-  // Telegram command polling loop
-  setInterval(pollTelegram, 2000);
-
   // ADS-B polling loop — watchlist
   pollTimer = setInterval(async () => {
     try {
@@ -2718,10 +2611,6 @@ async function main() {
     pollAircraft().catch(e => console.error('Initial poll error:', e.message));
     pollGeofence().catch(e => console.error('Initial geofence poll error:', e.message));
   }, 3000);
-
-  if (!CHAT_ID) {
-    console.log('\n💬 Send /start to your bot on Telegram to connect!\n');
-  }
 
   // ATC transcription — disabled for now (re-enable when quality improves)
   // atcTranscriber.init().catch(e => console.error('Whisper init error:', e.message));
