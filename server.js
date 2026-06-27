@@ -2398,7 +2398,12 @@ ${text}`;
     // GET /api/test-push
     if (req.method === 'GET' && req.url === '/api/test-push') {
       try {
-        if (!db) throw new Error('Database not connected');
+        if (!db) {
+          if (!process.env.MONGO_URI && !process.env.MONGODB_URI) {
+            throw new Error('Database not connected: MONGO_URI environment variable is completely missing in Render!');
+          }
+          throw new Error('Database not connected: The server tried to connect but failed. You MUST go to MongoDB Atlas -> Network Access -> Add IP Address -> Allow Access From Anywhere (0.0.0.0/0).');
+        }
         const subs = await db.collection('subscriptions').find({}).toArray();
         if (subs.length === 0) {
           res.writeHead(200, { 'Content-Type': 'application/json' });
