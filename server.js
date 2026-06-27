@@ -2396,9 +2396,27 @@ ${text}`;
     // GET /api/test-push
     if (req.method === 'GET' && req.url === '/api/test-push') {
       try {
-        await sendPushNotification('Test Alert', 'Web Push is working perfectly!');
+        if (!db) throw new Error('Database not connected');
+        const subs = await db.collection('subscriptions').find({}).toArray();
+        if (subs.length === 0) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: false, message: 'No subscriptions found in MongoDB. Please click Enable in the app again.' }));
+          return;
+        }
+        
+        let successCount = 0;
+        let errors = [];
+        for (const sub of subs) {
+          try {
+            await webpush.sendNotification(sub, JSON.stringify({ title: 'Test Alert', body: 'Web Push is working perfectly!' }));
+            successCount++;
+          } catch (e) {
+            errors.push(e.message);
+          }
+        }
+        
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ ok: true, message: 'Test push initiated' }));
+        res.end(JSON.stringify({ ok: true, subsFound: subs.length, successCount, errors }));
       } catch (e) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: e.message }));
