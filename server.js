@@ -23,17 +23,29 @@ if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
 }
 
 let db = null;
-const rawMongoUri = process.env.MONGO_URI || process.env.MONGODB_URI;
-if (rawMongoUri) {
-  const cleanUri = rawMongoUri.replace(/^["']|["']$/g, '');
-  const client = new MongoClient(cleanUri);
-  client.connect()
-    .then(c => {
-      db = c.db('aircraftAlert');
-      console.log('✅ Connected to MongoDB for push notifications');
-    })
-    .catch(e => console.error('❌ MongoDB connection error:', e.message));
+let mongoClient = null;
+
+async function getDB() {
+  if (db) return db;
+  const rawMongoUri = process.env.MONGO_URI || process.env.MONGODB_URI;
+  if (!rawMongoUri) return null;
+  
+  try {
+    const cleanUri = rawMongoUri.replace(/^["']|["']$/g, '');
+    if (!mongoClient) mongoClient = new MongoClient(cleanUri);
+    await mongoClient.connect();
+    db = mongoClient.db('aircraftAlert');
+    console.log('✅ Connected to MongoDB for push notifications');
+    return db;
+  } catch (e) {
+    console.error('❌ MongoDB connection error:', e.message);
+    mongoClient = null;
+    return null;
+  }
 }
+
+// Attempt initial connection
+getDB();
 
 // ── Config ──
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -249,16 +261,17 @@ async function sendMessage(text, parseMode = 'HTML') {
 }
 
 async function sendPushNotification(title, bodyText) {
-  if (!db || !process.env.VAPID_PUBLIC_KEY) return;
+  const database = await getDB();
+  if (!database || !process.env.VAPID_PUBLIC_KEY) return;
   try {
-    const subs = await db.collection('subscriptions').find({}).toArray();
+    const subs = await database.collection('subscriptions').find({}).toArray();
     for (const sub of subs) {
       try {
         await webpush.sendNotification(sub, JSON.stringify({ title, body: bodyText }));
       } catch (e) {
         if (e.statusCode === 410 || e.statusCode === 404) {
           // Subscription expired or unsubscribed
-          await db.collection('subscriptions').deleteOne({ _id: sub._id });
+          await database.collection('subscriptions').deleteOne({ _id: sub._id });
         } else {
           console.error('Push notification error:', e.message);
         }
@@ -2398,13 +2411,14 @@ ${text}`;
     // GET /api/test-push
     if (req.method === 'GET' && req.url === '/api/test-push') {
       try {
-        if (!db) {
+        const database = await getDB();
+        if (!database) {
           if (!process.env.MONGO_URI && !process.env.MONGODB_URI) {
             throw new Error('Database not connected: MONGO_URI environment variable is completely missing in Render!');
           }
           throw new Error('Database not connected: The server tried to connect but failed. You MUST go to MongoDB Atlas -> Network Access -> Add IP Address -> Allow Access From Anywhere (0.0.0.0/0).');
         }
-        const subs = await db.collection('subscriptions').find({}).toArray();
+        const subs = await database.collection('subscriptions').find({}).toArray();
         if (subs.length === 0) {
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ ok: false, message: 'No subscriptions found in MongoDB. Please click Enable in the app again.' }));
@@ -2437,9 +2451,10 @@ ${text}`;
       req.on('data', c => body += c);
       req.on('end', async () => {
         try {
-          if (!db) throw new Error('MongoDB not connected');
+          const database = await getDB();
+          if (!database) throw new Error('MongoDB not connected');
           const subscription = JSON.parse(body);
-          await db.collection('subscriptions').updateOne(
+          await database.collection('subscriptions').updateOne(
             { endpoint: subscription.endpoint },
             { $set: subscription },
             { upsert: true }
@@ -2460,10 +2475,11 @@ ${text}`;
       req.on('data', c => body += c);
       req.on('end', async () => {
         try {
-          if (!db) throw new Error('MongoDB not connected');
+          const database = await getDB();
+          if (!database) throw new Error('MongoDB not connected');
           const { endpoint } = JSON.parse(body);
           if (endpoint) {
-            await db.collection('subscriptions').deleteOne({ endpoint });
+            await database.collection('subscriptions').deleteOne({ endpoint });
           }
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ ok: true }));
