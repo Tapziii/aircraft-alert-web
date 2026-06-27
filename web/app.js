@@ -55,8 +55,12 @@
   const $statGround   = document.getElementById('stat-ground');
 
   // ---- Constants ----
-  const WS_URL       = `ws://${location.hostname || 'localhost'}:${location.port || 3000}`;
-  const API_BASE     = `http://${location.hostname || 'localhost'}:${location.port || 3000}`;
+  const isSecure = location.protocol === 'https:';
+  const wsProtocol = isSecure ? 'wss:' : 'ws:';
+  const httpProtocol = isSecure ? 'https:' : 'http:';
+  const portStr = location.port ? `:${location.port}` : '';
+  const WS_URL       = `${wsProtocol}//${location.hostname || 'localhost'}${portStr}`;
+  const API_BASE     = `${httpProtocol}//${location.hostname || 'localhost'}${portStr}`;
   const TRAIL_MAX    = 200;
   const RECONNECT_MS = 5000;
 
