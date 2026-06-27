@@ -1744,10 +1744,8 @@ async function pollGeofence() {
       if (!hex) continue;
       // Skip aircraft with no valid position
       if (ac.lat == null || ac.lon == null) continue;
-      // Skip truly parked aircraft (on ground with no speed)
-      // Don't filter all on_ground — APIs disagree causing flickering
-      const isParked = (ac.on_ground === true || ac.alt_baro === 'ground') && (!ac.gs || ac.gs < 5);
-      if (isParked) continue;
+      // Show all aircraft that are transmitting, including parked ones on the ground.
+      // Filtering by gs < 5 caused flickering because APIs disagree on ground status and speed.
       // Skip aircraft outside actual circular radius (APIs use bounding boxes)
       const distToCenter = haversineNm(geofence.lat, geofence.lon, ac.lat, ac.lon);
       if (distToCenter > geofence.radiusNm) continue;
