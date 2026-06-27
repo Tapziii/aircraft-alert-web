@@ -1353,8 +1353,8 @@ html, body {
 /* ---------- Mobile Responsive ---------- */
 @media (max-width: 640px) {
   :root { --sidebar-w: 100vw; }
-  
-  .wx-popup-h { min-width: unset !important; max-width: 85vw !important; }
+  .wx-popup-h { min-width: unset !important; max-width: 88vw !important; padding: 10px 12px; }
+  .wx-grid { grid-template-columns: 1fr; gap: 8px; }
 
   .mobile-drag-handle {
     display: block;
