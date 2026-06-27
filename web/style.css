@@ -1353,6 +1353,8 @@ html, body {
 /* ---------- Mobile Responsive ---------- */
 @media (max-width: 640px) {
   :root { --sidebar-w: 100vw; }
+  
+  .wx-popup-h { min-width: unset !important; max-width: 85vw !important; }
 
   .mobile-drag-handle {
     display: block;
