@@ -602,8 +602,12 @@ async function fetchWeather(icaoCode, force = false) {
   } catch (e) { return null; }
 }
 
+let isPollingAircraft = false;
 async function pollAircraft() {
   if (watchlist.length === 0) return;
+  if (isPollingAircraft) return;
+  isPollingAircraft = true;
+  try {
 
   const icao24s = watchlist.map(a => (a.icao24 || '').toLowerCase()).filter(Boolean);
   const prevState = {};
@@ -875,6 +879,9 @@ async function pollAircraft() {
 
   // Broadcast to web clients
   broadcastState();
+  } finally {
+    isPollingAircraft = false;
+  }
 }
 
 // ── Route Lookups (multi-source) ──
