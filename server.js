@@ -2109,6 +2109,44 @@ const httpServer = http.createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === 'GET' && req.url.startsWith('/api/atis/')) {
+      const icao = req.url.split('/').pop().toUpperCase();
+      try {
+        const atisRes = await fetch(`https://atis.guru/atis/${icao}`);
+        const html = await atisRes.text();
+        
+        const extract = (label) => {
+          const regex = new RegExp(`${label}[\\s\\S]*?<div class="atis">([\\s\\S]*?)<\\/div>`, 'i');
+          const match = html.match(regex);
+          return match ? match[1].replace(/&#xA;/g, '\n').replace(/&#xD;/g, '\r').replace(/<[^>]*>/g, '').trim() : null;
+        };
+
+        const arr = extract('Arrival ATIS');
+        const dep = extract('Departure ATIS');
+        let generic = extract('D-ATIS for');
+        
+        if (!arr && !dep && !generic) {
+          const genericMatch = html.match(/<div class="atis">([\s\S]*?)<\/div>/i);
+          if (genericMatch) {
+            generic = genericMatch[1].replace(/&#xA;/g, '\n').replace(/&#xD;/g, '\r').replace(/<[^>]*>/g, '').trim();
+          }
+        }
+
+        if (!arr && !dep && !generic) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'No ATIS found for ' + icao }));
+          return;
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ icao, arr, dep, combined: generic }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+      return;
+    }
+
     if (req.method === 'GET' && req.url === '/api/watchlist') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(watchlist));

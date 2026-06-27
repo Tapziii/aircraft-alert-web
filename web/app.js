@@ -1973,6 +1973,37 @@
       $atcMapBtn.classList.remove('live');
     });
 
+    // ---- Text D-ATIS Fetch ----
+    const $datisInput = document.getElementById('datis-input');
+    const $datisBtn = document.getElementById('datis-fetch-btn');
+    const $datisRes = document.getElementById('datis-result');
+    if ($datisInput && $datisBtn && $datisRes) {
+      $datisBtn.addEventListener('click', async () => {
+        const icao = $datisInput.value.trim().toUpperCase();
+        if (icao.length < 3) return;
+        $datisRes.style.display = 'block';
+        $datisRes.textContent = 'Fetching D-ATIS for ' + icao + '...';
+        try {
+          const r = await fetch(`${API_BASE}/api/atis/${icao}`);
+          const data = await r.json();
+          if (!r.ok) {
+            $datisRes.textContent = data.error || 'Failed to fetch ATIS.';
+            return;
+          }
+          let out = ``;
+          if (data.combined) out += `\n${data.combined}`;
+          if (data.arr) out += `\nARR: ${data.arr}`;
+          if (data.dep) out += `\nDEP: ${data.dep}`;
+          $datisRes.textContent = out.trim() || 'No ATIS content found.';
+        } catch (e) {
+          $datisRes.textContent = 'Network error fetching ATIS.';
+        }
+      });
+      $datisInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') $datisBtn.click();
+      });
+    }
+
     // ---- Poll interval slider ----
     const $pollRange = document.getElementById('poll-interval');
     const $pollLabel = document.getElementById('poll-interval-label');
