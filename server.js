@@ -11,6 +11,28 @@ process.on('unhandledRejection', (err) => {
   console.error('Unhandled rejection:', err);
 });
 
+const webpush = require('web-push');
+const { MongoClient } = require('mongodb');
+
+if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+  webpush.setVapidDetails(
+    'mailto:admin@aircraftalert.com',
+    process.env.VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  );
+}
+
+let db = null;
+if (process.env.MONGO_URI) {
+  const client = new MongoClient(process.env.MONGO_URI);
+  client.connect()
+    .then(c => {
+      db = c.db('aircraftAlert');
+      console.log('✅ Connected to MongoDB for push notifications');
+    })
+    .catch(e => console.error('❌ MongoDB connection error:', e.message));
+}
+
 // ── Config ──
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const POLL_INTERVAL = (parseInt(process.env.POLL_INTERVAL) || 5) * 1000;
@@ -221,6 +243,27 @@ async function sendMessage(text, parseMode = 'HTML') {
     await tg('sendMessage', { chat_id: CHAT_ID, text, parse_mode: parseMode, disable_web_page_preview: true });
   } catch (e) {
     console.error('Failed to send Telegram message:', e.message);
+  }
+}
+
+async function sendPushNotification(title, bodyText) {
+  if (!db || !process.env.VAPID_PUBLIC_KEY) return;
+  try {
+    const subs = await db.collection('subscriptions').find({}).toArray();
+    for (const sub of subs) {
+      try {
+        await webpush.sendNotification(sub, JSON.stringify({ title, body: bodyText }));
+      } catch (e) {
+        if (e.statusCode === 410 || e.statusCode === 404) {
+          // Subscription expired or unsubscribed
+          await db.collection('subscriptions').deleteOne({ _id: sub._id });
+        } else {
+          console.error('Push notification error:', e.message);
+        }
+      }
+    }
+  } catch (e) {
+    console.error('Failed to retrieve push subscriptions:', e.message);
   }
 }
 
@@ -850,6 +893,7 @@ async function pollAircraft() {
       const ground = curr.on_ground ? 'on ground' : (curr.altitude ? `at ${Number(curr.altitude).toLocaleString()} ft` : 'airborne');
       const speed = curr.velocity ? ` · ${Math.round(curr.velocity)} kts` : '';
       await sendMessage(`✈️ <b>${reg} is active!</b>\n${cs}${model}\n${ground}${speed}${route}`);
+      await sendPushNotification('Aircraft Active', `${reg} is active! ${cs.trim()}`);
     }
 
     // TAKEOFF
@@ -859,6 +903,7 @@ async function pollAircraft() {
       const cs = curr.callsign ? `Flight ${curr.callsign}` : '';
       const dest = curr.destination && curr.destination !== 'N/A' ? ` → ${curr.destination}` : '';
       await sendMessage(`🛫 <b>${reg} has taken off!</b>\n${cs}${dest}`);
+      await sendPushNotification('Takeoff Alert', `${reg} has taken off!`);
     }
 
     // LANDED
@@ -870,6 +915,7 @@ async function pollAircraft() {
         ? `\n${curr.destination}${curr.dest_city ? ' ('+curr.dest_city+')' : ''}`
         : '';
       await sendMessage(`🛬 <b>${reg} has landed</b>\n${cs}${dest}`);
+      await sendPushNotification('Landing Alert', `${reg} has landed.`);
     }
 
     // OFF-RADAR — with grace period to avoid false triggers from API gaps
@@ -2335,6 +2381,57 @@ ${text}`;
         } catch (e) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ ok: false, error: e.message }));
+        }
+      });
+      return;
+    }
+
+    // GET /api/vapidPublicKey
+    if (req.method === 'GET' && req.url === '/api/vapidPublicKey') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ publicKey: process.env.VAPID_PUBLIC_KEY || null }));
+      return;
+    }
+
+    // POST /api/notifications/subscribe
+    if (req.method === 'POST' && req.url === '/api/notifications/subscribe') {
+      let body = '';
+      req.on('data', c => body += c);
+      req.on('end', async () => {
+        try {
+          if (!db) throw new Error('MongoDB not connected');
+          const subscription = JSON.parse(body);
+          await db.collection('subscriptions').updateOne(
+            { endpoint: subscription.endpoint },
+            { $set: subscription },
+            { upsert: true }
+          );
+          res.writeHead(201, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: true }));
+        } catch (e) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
+      return;
+    }
+
+    // POST /api/notifications/unsubscribe
+    if (req.method === 'POST' && req.url === '/api/notifications/unsubscribe') {
+      let body = '';
+      req.on('data', c => body += c);
+      req.on('end', async () => {
+        try {
+          if (!db) throw new Error('MongoDB not connected');
+          const { endpoint } = JSON.parse(body);
+          if (endpoint) {
+            await db.collection('subscriptions').deleteOne({ endpoint });
+          }
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: true }));
+        } catch (e) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
         }
       });
       return;

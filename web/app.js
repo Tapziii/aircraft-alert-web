@@ -2177,6 +2177,62 @@
       } catch (e) { console.warn('Failed to toggle telegram:', e); }
     });
 
+    // ---- Phone Push Notifications ----
+    const $pushBtn = document.getElementById('push-subscribe-btn');
+    if ($pushBtn) {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        $pushBtn.textContent = 'Not Supported';
+        $pushBtn.disabled = true;
+      } else {
+        $pushBtn.addEventListener('click', async () => {
+          $pushBtn.textContent = 'Requesting...';
+          try {
+            const permission = await Notification.requestPermission();
+            if (permission !== 'granted') {
+              $pushBtn.textContent = 'Denied';
+              return;
+            }
+            const swReg = await navigator.serviceWorker.register('/sw.js');
+            const vapidRes = await fetch(`${API_BASE}/api/vapidPublicKey`);
+            const { publicKey } = await vapidRes.json();
+            if (!publicKey) {
+              $pushBtn.textContent = 'No VAPID Key';
+              return;
+            }
+            
+            const urlBase64ToUint8Array = (base64String) => {
+              const padding = '='.repeat((4 - base64String.length % 4) % 4);
+              const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+              const rawData = window.atob(base64);
+              const outputArray = new Uint8Array(rawData.length);
+              for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+              }
+              return outputArray;
+            };
+
+            const subscription = await swReg.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: urlBase64ToUint8Array(publicKey)
+            });
+
+            await fetch(`${API_BASE}/api/notifications/subscribe`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(subscription)
+            });
+
+            $pushBtn.textContent = 'Enabled';
+            $pushBtn.style.background = '#10b981';
+            $pushBtn.style.borderColor = '#059669';
+          } catch (e) {
+            console.error('Push subscription failed:', e);
+            $pushBtn.textContent = 'Error';
+          }
+        });
+      }
+    }
+
     // ---- Geo-fence ----
     const $gfEnabled = document.getElementById('geofence-enabled');
     const $gfRadiusGroup = document.getElementById('geofence-radius-group');
