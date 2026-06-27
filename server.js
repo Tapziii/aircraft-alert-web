@@ -456,10 +456,13 @@ async function handleAdd(input) {
       for (const variant of variants) {
         if (finalIcao) break;
         try {
+          console.log(`Trying adsbdb for variant: ${variant}`);
           const res = await fetchWithTimeout(`https://api.adsbdb.com/v0/aircraft/${variant}`, 5000);
+          console.log(`adsbdb response status: ${res.status}`);
           if (res.ok) {
             const data = await res.json();
             const ac = data?.response?.aircraft;
+            console.log(`adsbdb aircraft data:`, ac);
             if (ac?.mode_s) {
               finalIcao = ac.mode_s.toLowerCase();
               finalReg = ac.registration || regOriginal;
@@ -505,7 +508,7 @@ async function handleAdd(input) {
   removedIcaos.delete(finalIcao); // Clear from blocklist if previously removed
   const entry = { registration: finalReg, icao24: finalIcao, details };
   watchlist.push(entry);
-  saveData();
+  saveDataDebounced();
 
   broadcastState(); // Push update to web clients
   return { ok: true, entry };
@@ -531,7 +534,7 @@ async function handleRemove(input) {
       delete trailData[icao];
       removedIcaos.add(icao); // Block re-add from extension sync
     });
-    saveData();
+    saveDataDebounced();
 
     broadcastState();
     return { ok: true };
@@ -1128,7 +1131,7 @@ async function lookupRoutes(icao24s) {
     await new Promise(r => setTimeout(r, 500));
   }
 
-  if (batch.length > 0) saveData();
+  if (batch.length > 0) saveDataDebounced();
 }
 
 // Airport coordinate cache (IATA/ICAO -> {lat, lon, city})
@@ -2047,7 +2050,7 @@ const httpServer = http.createServer(async (req, res) => {
                 added++;
               }
             });
-            if (added > 0) saveData();
+            if (added > 0) saveDataDebounced();
             console.log(`📋 Watchlist synced: ${watchlist.length} aircraft (+${added} new from extension)`);
 
             // 3. Tell extension which ICAOs were removed server-side so it can remove them too
@@ -2191,7 +2194,7 @@ ${text}`;
       req.on('end', async () => {
         try {
           const { input } = JSON.parse(body);
-          const result = await handleAdd(null, input);
+          const result = await handleAdd(input);
           res.writeHead(result?.ok ? 200 : 404, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify(result || { ok: false }));
         } catch (e) {
@@ -2258,7 +2261,7 @@ ${text}`;
       req.on('end', async () => {
         try {
           const { input } = JSON.parse(body);
-          const result = await handleRemove(null, input);
+          const result = await handleRemove(input);
           res.writeHead(result?.ok ? 200 : 404, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify(result || { ok: false }));
         } catch (e) {
@@ -2438,7 +2441,7 @@ ${text}`;
               }
             }
           }
-          saveData();
+          saveDataDebounced();
           broadcastState();
           // Reset source caches so fresh data flows immediately
           pollGeofence._loggedMerge = false;
@@ -2477,7 +2480,7 @@ ${text}`;
               // Pre-resolve coords and weather
               const coords = await lookupAirportCoords(code);
               fetchWeather(code).catch(() => {});
-              saveData();
+              saveDataDebounced();
               broadcastState();
               console.log(`⭐ Favorite airport added: ${code}`);
             }
@@ -2485,7 +2488,7 @@ ${text}`;
           if (data.remove) {
             const code = data.remove.toUpperCase().trim();
             favoriteAirports = favoriteAirports.filter(c => c !== code);
-            saveData();
+            saveDataDebounced();
             broadcastState();
             console.log(`⭐ Favorite airport removed: ${code}`);
           }
