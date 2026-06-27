@@ -2389,17 +2389,6 @@ ${text}`;
       return;
     }
 
-            console.log(`📱 Telegram notifications: ${enabled ? 'ON' : 'OFF'}`);
-          }
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ ok: true, enabled: telegramEnabled }));
-        } catch (e) {
-          res.writeHead(400);
-          res.end(JSON.stringify({ error: 'Invalid JSON' }));
-        }
-      });
-      return;
-    }
 
     if (req.method === 'GET' && req.url === '/api/geofence') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
