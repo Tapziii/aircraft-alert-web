@@ -867,7 +867,7 @@ async function pollAircraft() {
       const last = trail[trail.length - 1];
       if (!last || last.lat !== ac.lat || last.lon !== ac.lon) {
         trail.push({ lat: ac.lat, lon: ac.lon, alt: ac.alt_baro, ts: nowSec });
-        if (trail.length > 100) trail.splice(0, trail.length - 100);
+        if (trail.length > 1000) trail.splice(0, trail.length - 1000);
       }
     }
   });

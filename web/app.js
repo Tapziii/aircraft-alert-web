@@ -61,7 +61,7 @@
   const portStr = location.port ? `:${location.port}` : '';
   const WS_URL       = `${wsProtocol}//${location.hostname || 'localhost'}${portStr}`;
   const API_BASE     = `${httpProtocol}//${location.hostname || 'localhost'}${portStr}`;
-  const TRAIL_MAX    = 200;
+  const TRAIL_MAX    = 1000;
   const RECONNECT_MS = 5000;
 
   // ============================================================
