@@ -118,6 +118,7 @@ let geofence = {
   seenIcaos: new Set(),
 };
 const weatherCache = {};
+const atisCache = {}; // { icao: { ts, letter, text, arrRunways, depRunways, criticalEvents } }
 const speedHistory = {};
 let sourceRotationIndex = 0;
 let geofenceRotationIndex = 0;
@@ -555,6 +556,97 @@ async function fetchWithTimeout(url, timeout = 10000) {
     try { await res.text(); } catch (_) {}
   }
   return res;
+}
+
+async function pollAtis() {
+  const airportsToPoll = new Set([...favoriteAirports, ...geofenceAirports.map(a => a.icao)]);
+  for (const icao of airportsToPoll) {
+    if (!icao || icao === 'N/A') continue;
+    try {
+      const atisRes = await fetchWithTimeout(`https://atis.guru/atis/${icao}`, 5000);
+      if (!atisRes.ok) continue;
+      const html = await atisRes.text();
+      
+      const extract = (label) => {
+        const regex = new RegExp(`${label}[\\s\\S]*?<div class="atis">([\\s\\S]*?)<\\/div>`, 'i');
+        const match = html.match(regex);
+        return match ? match[1].replace(/&#xA;/g, '\n').replace(/&#xD;/g, '\r').replace(/&#x9;/g, '  ').replace(/<[^>]*>/g, '').trim() : null;
+      };
+
+      let arr = extract('Arrival ATIS');
+      let dep = extract('Departure ATIS');
+      let generic = extract('D-ATIS for');
+      if (!arr && !dep && !generic) {
+        const genericMatch = html.match(/<div class="atis">([\s\S]*?)<\/div>/i);
+        if (genericMatch) {
+          generic = genericMatch[1].replace(/&#xA;/g, '\n').replace(/&#xD;/g, '\r').replace(/&#x9;/g, '  ').replace(/<[^>]*>/g, '').trim();
+        }
+      }
+      
+      const fullText = [arr, dep, generic].filter(Boolean).join('\n\n');
+      if (!fullText) continue;
+
+      // Extract Letter
+      const letterMatch = fullText.match(/info(?:rmation)?\s+([a-z])/i);
+      const letter = letterMatch ? letterMatch[1].toUpperCase() : null;
+
+      // Extract Critical Events
+      const criticalKeywords = ['WINDSHEAR', 'MICROBURST', 'CLOSED', 'UNSERVICEABLE', 'BIRD ACTIVITY', 'LASER', 'UAS'];
+      const criticalEvents = [];
+      for (const kw of criticalKeywords) {
+        if (fullText.toUpperCase().includes(kw)) {
+          criticalEvents.push(kw);
+        }
+      }
+
+      // Extract Runways
+      let arrRunways = [];
+      let depRunways = [];
+      
+      const extractRwys = (text) => {
+        const matches = text.matchAll(/RWY[S]?\s+([0-9]{2}[LCR]?)(?:\s+AND\s+([0-9]{2}[LCR]?))?/gi);
+        const altMatches = text.matchAll(/RUNWAY[S]?\s+([0-9]{2}[LCR]?)(?:\s+AND\s+([0-9]{2}[LCR]?))?/gi);
+        const rwys = [];
+        for (const m of [...matches, ...altMatches]) {
+          if (m[1]) rwys.push(m[1].toUpperCase());
+          if (m[2]) rwys.push(m[2].toUpperCase());
+        }
+        return [...new Set(rwys)];
+      };
+
+      if (arr || dep) {
+        if (arr) arrRunways = extractRwys(arr);
+        if (dep) depRunways = extractRwys(dep);
+      } else if (generic) {
+        const arrCtx = generic.match(/ARRIVALS?(?:[\s\S]*?)RUNWAY[S]?\s+([0-9]{2}[LCR]?(?:\s+AND\s+[0-9]{2}[LCR]?)?)/i);
+        if (arrCtx) arrRunways = extractRwys(arrCtx[0]);
+        const depCtx = generic.match(/DEPARTURES?(?:[\s\S]*?)RUNWAY[S]?\s+([0-9]{2}[LCR]?(?:\s+AND\s+[0-9]{2}[LCR]?)?)/i);
+        if (depCtx) depRunways = extractRwys(depCtx[0]);
+        
+        if (arrRunways.length === 0 && depRunways.length === 0) {
+          const allRwys = extractRwys(generic);
+          arrRunways = allRwys;
+          depRunways = allRwys;
+        }
+      }
+
+      const prev = atisCache[icao];
+      atisCache[icao] = {
+        ts: Date.now(),
+        letter,
+        text: fullText,
+        arrRunways,
+        depRunways,
+        criticalEvents
+      };
+
+      if (criticalEvents.length > 0) {
+        if (!prev || prev.letter !== letter) {
+           sendPushNotification(`ATIS Critical Alert: ${icao}`, `Info ${letter || ''}: ${criticalEvents.join(', ')} reported.`);
+        }
+      }
+    } catch (e) {}
+  }
 }
 
 async function fetchWeather(icaoCode, force = false) {
@@ -1414,9 +1506,15 @@ async function predictRunwaysForAll() {
 
     const result = predictRunway(state.destination, windDir, windSpeed, state.heading, distNm, 'ARR');
     if (result) {
-      state.predicted_runway = result.runway;
+      const atis = atisCache[state.destination];
+      if (atis && atis.arrRunways && atis.arrRunways.length > 0) {
+        state.predicted_runway = atis.arrRunways.join('/');
+        state.runway_confidence = 'ATIS';
+      } else {
+        state.predicted_runway = result.runway;
+        state.runway_confidence = result.confidence;
+      }
       state.runway_wind = `${result.windDir || '---'}°/${result.windSpeed || 0}kt`;
-      state.runway_confidence = result.confidence;
       state.runway_headwind = result.headwind;
       state.runway_crosswind = result.crosswind;
       state.runway_history_count = result.historyCount;
@@ -1426,6 +1524,12 @@ async function predictRunwaysForAll() {
     // ── Departure runway prediction ──
     // Only predict if not already locked in from a previous poll
     if (state.origin && state.origin !== 'N/A' && !state.dep_runway) {
+      const depAtis = atisCache[state.origin];
+      if (depAtis && depAtis.depRunways && depAtis.depRunways.length > 0) {
+        state.dep_runway = depAtis.depRunways.join('/');
+        state.dep_runway_confidence = 'ATIS';
+        continue;
+      }
       let depDistNm = null;
       if (state.lat && state.lon && state.origin_lat && state.origin_lon) {
         depDistNm = haversineNm(state.lat, state.lon, state.origin_lat, state.origin_lon);
@@ -1972,6 +2076,7 @@ function broadcastState() {
     runwayHistory: runwayHistory,
     favoriteAirports: favoriteAirports,
     favAirportCoords: favAirportCoords,
+    atis: atisCache,
     ts: Date.now(),
   });
   for (const ws of wsClients) {

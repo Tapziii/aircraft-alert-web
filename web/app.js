@@ -1773,6 +1773,38 @@
       renderNearby(true); // Fast: markers only, skip DOM rebuild
     }
 
+    // Handle ATIS Critical Alerts
+    if (msg.atis) {
+      const criticalAlerts = [];
+      for (const icao of Object.keys(msg.atis)) {
+        const atis = msg.atis[icao];
+        if (atis && atis.criticalEvents && atis.criticalEvents.length > 0) {
+          criticalAlerts.push(`<strong>${icao} Info ${atis.letter || ''}:</strong> ${atis.criticalEvents.join(', ')}`);
+        }
+      }
+      const $alertBox = document.getElementById('critical-alert-box');
+      const $alertText = document.getElementById('alert-text');
+      const $alertClose = document.getElementById('alert-close');
+      
+      if ($alertBox && $alertText) {
+        if (criticalAlerts.length > 0) {
+          $alertText.innerHTML = criticalAlerts.join('<br/>');
+          if ($alertBox.style.display === 'none') {
+            $alertBox.style.display = 'flex';
+          }
+        } else {
+          $alertBox.style.display = 'none';
+        }
+        
+        if ($alertClose && !$alertClose.hasListener) {
+          $alertClose.hasListener = true;
+          $alertClose.addEventListener('click', () => {
+            $alertBox.style.display = 'none';
+          });
+        }
+      }
+    }
+
     // Restore geofence state from server
     if (msg.geofence) {
       const gf = msg.geofence;

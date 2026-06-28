@@ -1742,3 +1742,58 @@ html, body {
 .navaid-tooltip::before {
   border-top-color: rgba(59,130,246,.3) !important;
 }
+
+.critical-alert-box {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  background: rgba(220, 38, 38, 0.95);
+  border: 1px solid #f87171;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4);
+  backdrop-filter: blur(8px);
+  max-width: 90vw;
+  animation: slideDown 0.3s ease-out;
+}
+@keyframes slideDown {
+  from { top: 0; opacity: 0; }
+  to { top: 70px; opacity: 1; }
+}
+.alert-icon {
+  font-size: 24px;
+}
+.alert-content {
+  display: flex;
+  flex-direction: column;
+}
+.alert-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fca5a5;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: 2px;
+}
+.alert-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+}
+.alert-close {
+  background: none;
+  border: none;
+  color: #fca5a5;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 8px;
+}
+.alert-close:hover {
+  color: #ffffff;
+}
