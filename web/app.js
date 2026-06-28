@@ -914,7 +914,7 @@
           <span class="status-dot ${status}"></span>
           <span class="popup-reg">${getReg(ac)}</span>
           <span class="popup-callsign">${getCallsign(ac)}</span>
-          <button id="trail-btn-popup-${icao}" onclick="window.toggleTrail('${icao}')" title="Toggle Trail" style="background:none; border:none; color:#a1a1aa; cursor:pointer; margin-left:auto; margin-right:20px; padding:0; font-size:20px; transition: color 0.2s;" onmouseover="this.style.color='#f4f4f5'" onmouseout="this.style.color='#a1a1aa'">
+          <button id="trail-btn-popup-${icao}" onclick="window.toggleTrail('${icao}')" title="Toggle Trail" style="position:absolute; top:7px; right:28px; background:none; border:none; color:#a1a1aa; cursor:pointer; padding:0; font-size:20px; transition: color 0.2s;" onmouseover="this.style.color='#f4f4f5'" onmouseout="this.style.color='#a1a1aa'">
             ${trailVisible.has(icao) ? eyeOpenSvg : eyeClosedSvg}
           </button>
         </div>
