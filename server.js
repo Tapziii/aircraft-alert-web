@@ -1233,8 +1233,27 @@ async function lookupRoutes(icao24s) {
   if (batch.length > 0) saveDataDebounced();
 }
 
-// Airport coordinate cache (IATA/ICAO -> {lat, lon, city})
+// Airport coordinate cache (IATA/ICAO -> {lat, lon, city, icao})
 const airportCoordCache = {};
+const iataToIcaoCache = {};
+
+async function resolveIcao(code) {
+  if (!code || code === 'N/A') return null;
+  if (code.length === 4) return code;
+  if (iataToIcaoCache[code]) return iataToIcaoCache[code];
+  try {
+    const res = await fetchWithTimeout(`https://api.flightradar24.com/common/v1/airport.json?code=${code}`, 3000);
+    if (res.ok) {
+      const data = await res.json();
+      const icao = data?.result?.response?.airport?.pluginData?.details?.code?.icao;
+      if (icao) {
+        iataToIcaoCache[code] = icao.toUpperCase();
+        return iataToIcaoCache[code];
+      }
+    }
+  } catch (e) {}
+  return code; // Fallback to original
+}
 
 async function lookupAirportCoords(code) {
   if (!code || code === 'N/A') return null;
@@ -1243,10 +1262,15 @@ async function lookupAirportCoords(code) {
   // If previously failed via APIs, retry after 5 minutes
   if (cached === null && airportCoordCache[`${code}_ts`] && Date.now() - airportCoordCache[`${code}_ts`] < 300000) return null;
 
+  let searchCode = code;
+  if (code.length === 3) {
+    searchCode = await resolveIcao(code) || code;
+  }
+
   // Source 1: Local airport database (instant, offline, 72K airports)
-  if (airportDB[code]) {
-    const ap = airportDB[code];
-    const result = { lat: ap.lat, lon: ap.lon, city: ap.name || '' };
+  if (airportDB[searchCode]) {
+    const ap = airportDB[searchCode];
+    const result = { lat: ap.lat, lon: ap.lon, city: ap.name || '', icao: searchCode };
     airportCoordCache[code] = result;
     return result;
   }
@@ -1295,6 +1319,10 @@ async function resolveAirportCoords(state, callsign) {
   if (state.origin && state.origin !== 'N/A' && !state.origin_lat) {
     const coords = await lookupAirportCoords(state.origin);
     if (coords) {
+      if (coords.icao && coords.icao !== state.origin) {
+        state.origin = coords.icao;
+        if (routeCache[callsign]) routeCache[callsign].origin = coords.icao;
+      }
       state.origin_lat = coords.lat;
       state.origin_lon = coords.lon;
       if (!state.origin_city) state.origin_city = coords.city;
@@ -1311,6 +1339,10 @@ async function resolveAirportCoords(state, callsign) {
   if (state.destination && state.destination !== 'N/A' && !state.dest_lat) {
     const coords = await lookupAirportCoords(state.destination);
     if (coords) {
+      if (coords.icao && coords.icao !== state.destination) {
+        state.destination = coords.icao;
+        if (routeCache[callsign]) routeCache[callsign].destination = coords.icao;
+      }
       state.dest_lat = coords.lat;
       state.dest_lon = coords.lon;
       if (!state.dest_city) state.dest_city = coords.city;
@@ -2192,8 +2224,16 @@ const httpServer = http.createServer(async (req, res) => {
     }
 
     if (req.method === 'GET' && req.url.startsWith('/api/atis/')) {
-      const icao = req.url.split('/').pop().toUpperCase();
+      let icao = req.url.split('/').pop().toUpperCase();
       try {
+        if (icao.length === 3) {
+          const fr24Res = await fetchWithTimeout(`https://api.flightradar24.com/common/v1/airport.json?code=${icao}`, 5000);
+          if (fr24Res.ok) {
+            const fr24Data = await fr24Res.json();
+            const resolvedIcao = fr24Data?.result?.response?.airport?.pluginData?.details?.code?.icao;
+            if (resolvedIcao) icao = resolvedIcao.toUpperCase();
+          }
+        }
         const atisRes = await fetch(`https://atis.guru/atis/${icao}`);
         const html = await atisRes.text();
         
