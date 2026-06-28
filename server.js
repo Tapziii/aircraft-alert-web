@@ -1045,8 +1045,12 @@ async function lookupRoutes(icao24s) {
       const dLon = rd.dest_lon || airportDB[rd.destination]?.lon;
       if (dLat && dLon) {
         const routeLen = haversineNm(oLat, oLon, dLat, dLon);
-        if (distFromOrigin > routeLen * 2.5 + 200) {
-          console.log(`⚠️ Route rejected for ${callsign}: origin ${rd.origin} is ${Math.round(distFromOrigin)}nm (route ${Math.round(routeLen)}nm)`);
+        const distToDest = haversineNm(st.lat, st.lon, dLat, dLon);
+        const pathLen = distFromOrigin + distToDest;
+        
+        // If the path taken is grossly longer than the direct route, it's flying the wrong way (stale callsign)
+        if (pathLen > routeLen * 1.5 + 100) {
+          console.log(`⚠️ Route rejected for ${callsign} (${rd.origin}->${rd.destination}): flying wrong way. Path ${Math.round(pathLen)}nm > Route ${Math.round(routeLen)}nm`);
           return false;
         }
       } else if (distFromOrigin > 5000) {
