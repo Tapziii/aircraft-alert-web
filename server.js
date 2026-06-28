@@ -623,10 +623,16 @@ async function pollAtis() {
         const depCtx = generic.match(/DEPARTURES?(?:[\s\S]*?)RUNWAY[S]?\s+([0-9]{2}[LCR]?(?:\s+AND\s+[0-9]{2}[LCR]?)?)/i);
         if (depCtx) depRunways = extractRwys(depCtx[0]);
         
+        const allRwys = extractRwys(generic);
         if (arrRunways.length === 0 && depRunways.length === 0) {
-          const allRwys = extractRwys(generic);
           arrRunways = allRwys;
           depRunways = allRwys;
+        } else if (arrRunways.length === 0 && allRwys.length > 0) {
+          arrRunways = allRwys.filter(r => !depRunways.includes(r));
+          if (arrRunways.length === 0) arrRunways = [...depRunways];
+        } else if (depRunways.length === 0 && allRwys.length > 0) {
+          depRunways = allRwys.filter(r => !arrRunways.includes(r));
+          if (depRunways.length === 0) depRunways = [...arrRunways];
         }
       }
 
@@ -1554,56 +1560,60 @@ async function predictRunwaysForAll() {
     }
 
     // ── Departure runway prediction ──
-    // Only predict if not already locked in from a previous poll
-    if (state.origin && state.origin !== 'N/A' && !state.dep_runway) {
-      const depAtis = atisCache[state.origin];
-      if (depAtis && depAtis.depRunways && depAtis.depRunways.length > 0) {
-        state.dep_runway = depAtis.depRunways.join('/');
-        state.dep_runway_confidence = 'ATIS';
-        continue;
-      }
-      let depDistNm = null;
-      if (state.lat && state.lon && state.origin_lat && state.origin_lon) {
-        depDistNm = haversineNm(state.lat, state.lon, state.origin_lat, state.origin_lon);
-      }
-
-      // Primary: use aircraft's actual heading near origin to match runway
-      // After takeoff, the aircraft heading ≈ runway heading
-      if (state.heading != null && depDistNm != null && depDistNm < 30
-          && state.altitude && state.altitude < 15000) {
-        const runways = getRunways(state.origin);
-        if (runways && runways.length > 0) {
-          // Find the runway whose heading best matches the aircraft heading
-          let bestRwy = null;
-          let bestDiff = 360;
-          runways.forEach(rw => {
-            if (rw.le && rw.lh != null) {
-              let diff = Math.abs(state.heading - rw.lh);
-              if (diff > 180) diff = 360 - diff;
-              if (diff < bestDiff) { bestDiff = diff; bestRwy = { id: rw.le, heading: rw.lh }; }
-            }
-            if (rw.he && rw.hh != null) {
-              let diff = Math.abs(state.heading - rw.hh);
-              if (diff > 180) diff = 360 - diff;
-              if (diff < bestDiff) { bestDiff = diff; bestRwy = { id: rw.he, heading: rw.hh }; }
-            }
-          });
-
-          if (bestRwy && bestDiff < 15) {
-            const depWx = weatherCache[state.origin];
-            let depWindStr = '';
-            if (depWx?.metar) {
-              const m = depWx.metar.match(/\b(\d{3}|VRB)(\d{2,3})(?:G\d{2,3})?KT\b/);
-              if (m) depWindStr = `${m[1]}°/${m[2]}kt`;
-            }
-            state.dep_runway = bestRwy.id;
-            state.dep_runway_wind = depWindStr || '';
-            state.dep_runway_confidence = bestDiff < 10 ? 'HIGH' : 'TRACK';
-            state.dep_runway_headwind = null;
-            state.dep_runway_crosswind = null;
-          }
+    if (state.origin && state.origin !== 'N/A') {
+      // 1. Always check ATIS first if we don't have a HIGH confidence track match
+      if (state.dep_runway_confidence !== 'HIGH') {
+        const depAtis = atisCache[state.origin];
+        if (depAtis && depAtis.depRunways && depAtis.depRunways.length > 0) {
+          state.dep_runway = depAtis.depRunways.join('/');
+          state.dep_runway_confidence = 'ATIS';
         }
       }
+
+      // 2. If still not set, or only set by WIND/TRAFFIC (which can change), evaluate track/wind
+      if (!state.dep_runway || state.dep_runway_confidence === 'WIND' || state.dep_runway_confidence === 'TRAFFIC') {
+        let depDistNm = null;
+        if (state.lat && state.lon && state.origin_lat && state.origin_lon) {
+          depDistNm = haversineNm(state.lat, state.lon, state.origin_lat, state.origin_lon);
+        }
+
+        // Primary: use aircraft's actual heading near origin to match runway
+        // After takeoff, the aircraft heading ≈ runway heading
+        if (state.heading != null && depDistNm != null && depDistNm < 30
+            && state.altitude && state.altitude < 15000) {
+          const runways = getRunways(state.origin);
+          if (runways && runways.length > 0) {
+            // Find the runway whose heading best matches the aircraft heading
+            let bestRwy = null;
+            let bestDiff = 360;
+            runways.forEach(rw => {
+              if (rw.le && rw.lh != null) {
+                let diff = Math.abs(state.heading - rw.lh);
+                if (diff > 180) diff = 360 - diff;
+                if (diff < bestDiff) { bestDiff = diff; bestRwy = { id: rw.le, heading: rw.lh }; }
+              }
+              if (rw.he && rw.hh != null) {
+                let diff = Math.abs(state.heading - rw.hh);
+                if (diff > 180) diff = 360 - diff;
+                if (diff < bestDiff) { bestDiff = diff; bestRwy = { id: rw.he, heading: rw.hh }; }
+              }
+            });
+
+            if (bestRwy && bestDiff < 15) {
+              const depWx = weatherCache[state.origin];
+              let depWindStr = '';
+              if (depWx?.metar) {
+                const m = depWx.metar.match(/\b(\d{3}|VRB)(\d{2,3})(?:G\d{2,3})?KT\b/);
+                if (m) depWindStr = `${m[1]}°/${m[2]}kt`;
+              }
+              state.dep_runway = bestRwy.id;
+              state.dep_runway_wind = depWindStr || '';
+              state.dep_runway_confidence = bestDiff < 10 ? 'HIGH' : 'TRACK';
+              state.dep_runway_headwind = null;
+              state.dep_runway_crosswind = null;
+            }
+          }
+        }
 
       // Fallback: wind-based prediction only if still no dep_runway
       // and aircraft is far from origin (can't use track anymore)
