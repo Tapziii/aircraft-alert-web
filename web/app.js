@@ -2221,7 +2221,46 @@
         $pushBtn.textContent = 'Not Supported';
         $pushBtn.disabled = true;
       } else {
+        // Check existing subscription
+        navigator.serviceWorker.getRegistration('/sw.js').then(async (swReg) => {
+          if (swReg) {
+            const existingSub = await swReg.pushManager.getSubscription();
+            if (existingSub) {
+              $pushBtn.textContent = 'Disable Notifications';
+              $pushBtn.style.background = '#ef4444';
+              $pushBtn.style.borderColor = '#dc2626';
+              $pushBtn.dataset.subscribed = 'true';
+            }
+          }
+        }).catch(() => {});
+
         $pushBtn.addEventListener('click', async () => {
+          if ($pushBtn.dataset.subscribed === 'true') {
+            $pushBtn.textContent = 'Disabling...';
+            try {
+              const swReg = await navigator.serviceWorker.getRegistration('/sw.js');
+              if (swReg) {
+                const sub = await swReg.pushManager.getSubscription();
+                if (sub) {
+                  await fetch(`${API_BASE}/api/notifications/unsubscribe`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(sub)
+                  });
+                  await sub.unsubscribe();
+                }
+              }
+              $pushBtn.textContent = 'Enable Notifications';
+              $pushBtn.style.background = '#3b82f6';
+              $pushBtn.style.borderColor = '#2563eb';
+              $pushBtn.dataset.subscribed = 'false';
+            } catch (e) {
+              console.error('Push unsubscription failed:', e);
+              $pushBtn.textContent = 'Error';
+            }
+            return;
+          }
+
           $pushBtn.textContent = 'Requesting...';
           try {
             const permission = await Notification.requestPermission();
@@ -2259,9 +2298,10 @@
               body: JSON.stringify(subscription)
             });
 
-            $pushBtn.textContent = 'Enabled';
-            $pushBtn.style.background = '#10b981';
-            $pushBtn.style.borderColor = '#059669';
+            $pushBtn.textContent = 'Disable Notifications';
+            $pushBtn.style.background = '#ef4444';
+            $pushBtn.style.borderColor = '#dc2626';
+            $pushBtn.dataset.subscribed = 'true';
           } catch (e) {
             console.error('Push subscription failed:', e);
             $pushBtn.textContent = 'Error';
