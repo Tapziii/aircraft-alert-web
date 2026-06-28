@@ -314,18 +314,24 @@ html, body {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex: 1;
+  justify-content: flex-end;
+  min-width: 0;
 }
 .settings-value {
   font-size: 12px;
   font-weight: 600;
   color: var(--primary);
-  min-width: 32px;
+  min-width: 38px;
   text-align: right;
   font-family: var(--mono);
 }
 .settings-range {
   -webkit-appearance: none;
-  width: 120px;
+  flex: 1;
+  width: 100%;
+  max-width: 120px;
+  min-width: 0;
   height: 4px;
   border-radius: 2px;
   background: var(--border-card);

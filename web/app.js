@@ -1810,8 +1810,10 @@
         $gfRadiusGroup.style.display = 'flex';
         $gfCoordsGroup.style.display = 'flex';
 
-        $gfRadius.value = gf.radiusNm;
-        $gfRadiusLabel.textContent = gf.radiusNm + 'nm';
+        if (document.activeElement !== $gfRadius) {
+          $gfRadius.value = gf.radiusNm;
+          $gfRadiusLabel.textContent = gf.radiusNm + 'nm';
+        }
         $gfPick.textContent = `📍 ${gf.lat.toFixed(2)}, ${gf.lon.toFixed(2)}`;
         localStorage.setItem('gfLat', gf.lat);
         localStorage.setItem('gfLon', gf.lon);
