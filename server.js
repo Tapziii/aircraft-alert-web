@@ -927,7 +927,7 @@ async function pollAircraft() {
       const ground = curr.on_ground ? 'on ground' : (curr.altitude ? `at ${Number(curr.altitude).toLocaleString()} ft` : 'airborne');
       const speed = curr.velocity ? ` · ${Math.round(curr.velocity)} kts` : '';
 
-      await sendPushNotification('Aircraft Active', `${reg} is active! ${cs.trim()}`);
+      await sendPushNotification('Aircraft Active', `${reg} ${cs.trim() ? '('+cs.trim()+') ' : ''}is active ${ground}${speed}${route}`);
     }
 
     // TAKEOFF
@@ -937,7 +937,7 @@ async function pollAircraft() {
       const cs = curr.callsign ? `Flight ${curr.callsign}` : '';
       const dest = curr.destination && curr.destination !== 'N/A' ? ` → ${curr.destination}` : '';
 
-      await sendPushNotification('Takeoff Alert', `${reg} has taken off!`);
+      await sendPushNotification('Takeoff Alert', `${reg} ${cs.trim() ? '('+cs.trim()+') ' : ''}has taken off!${dest}`);
     }
 
     // LANDED
@@ -949,7 +949,7 @@ async function pollAircraft() {
         ? `\n${curr.destination}${curr.dest_city ? ' ('+curr.dest_city+')' : ''}`
         : '';
 
-      await sendPushNotification('Landing Alert', `${reg} has landed.`);
+      await sendPushNotification('Landing Alert', `${reg} ${cs.trim() ? '('+cs.trim()+') ' : ''}has landed.${dest}`);
     }
 
     // OFF-RADAR — with grace period to avoid false triggers from API gaps
