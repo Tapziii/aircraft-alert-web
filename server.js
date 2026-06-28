@@ -1636,6 +1636,7 @@ async function predictRunwaysForAll() {
           state.dep_runway_crosswind = depResult.crosswind;
         }
       }
+      }
     }
 
     // ── Detect and record landings ──
