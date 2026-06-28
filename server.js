@@ -1248,10 +1248,10 @@ async function resolveIcao(code) {
   if (code.length === 4) return code;
   if (iataToIcaoCache[code]) return iataToIcaoCache[code];
   try {
-    const res = await fetchWithTimeout(`https://api.flightradar24.com/common/v1/airport.json?code=${code}`, 3000);
+    const res = await fetchWithTimeout(`https://hexdb.io/api/v1/airport/iata/${code}`, 3000);
     if (res.ok) {
       const data = await res.json();
-      const icao = data?.result?.response?.airport?.pluginData?.details?.code?.icao;
+      const icao = data?.icao;
       if (icao) {
         iataToIcaoCache[code] = icao.toUpperCase();
         return iataToIcaoCache[code];
@@ -2238,10 +2238,10 @@ const httpServer = http.createServer(async (req, res) => {
       let icao = req.url.split('/').pop().toUpperCase();
       try {
         if (icao.length === 3) {
-          const fr24Res = await fetchWithTimeout(`https://api.flightradar24.com/common/v1/airport.json?code=${icao}`, 5000);
-          if (fr24Res.ok) {
-            const fr24Data = await fr24Res.json();
-            const resolvedIcao = fr24Data?.result?.response?.airport?.pluginData?.details?.code?.icao;
+          const hexRes = await fetchWithTimeout(`https://hexdb.io/api/v1/airport/iata/${icao}`, 5000);
+          if (hexRes.ok) {
+            const hexData = await hexRes.json();
+            const resolvedIcao = hexData?.icao;
             if (resolvedIcao) icao = resolvedIcao.toUpperCase();
           }
         }
