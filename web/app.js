@@ -64,6 +64,9 @@
   const TRAIL_MAX    = 1000;
   const RECONNECT_MS = 5000;
 
+  const eyeOpenSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+  const eyeClosedSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
+
   // ============================================================
   //  HELPERS
   // ============================================================
@@ -901,8 +904,8 @@
           <span class="status-dot ${status}"></span>
           <span class="popup-reg">${getReg(ac)}</span>
           <span class="popup-callsign">${getCallsign(ac)}</span>
-          <button onclick="window.toggleTrail('${icao}')" title="Toggle Trail" style="background:none; border:none; color:#a1a1aa; cursor:pointer; margin-left:auto; padding:0; font-size:20px; transition: color 0.2s;" onmouseover="this.style.color='#f4f4f5'" onmouseout="this.style.color='#a1a1aa'">
-            <i id="trail-icon-${icao}" class='bx ${trailVisible.has(icao) ? 'bx-show' : 'bx-hide'}'></i>
+          <button id="trail-btn-popup-${icao}" onclick="window.toggleTrail('${icao}')" title="Toggle Trail" style="background:none; border:none; color:#a1a1aa; cursor:pointer; margin-left:auto; margin-right:20px; padding:0; font-size:20px; transition: color 0.2s;" onmouseover="this.style.color='#f4f4f5'" onmouseout="this.style.color='#a1a1aa'">
+            ${trailVisible.has(icao) ? eyeOpenSvg : eyeClosedSvg}
           </button>
         </div>
         ${routeLine}
@@ -993,22 +996,25 @@
     const entry = aircraftData[icao];
     if (!entry) return;
     
-    const pIcon = document.getElementById(`trail-icon-${icao}`);
-    const sIcon = document.getElementById(`sidebar-trail-icon-${icao}`);
-    const sBtn  = sIcon?.parentElement;
+    const pBtn = document.getElementById(`trail-btn-popup-${icao}`);
+    const sBtn = document.getElementById(`trail-btn-sidebar-${icao}`);
     
     if (trailVisible.has(icao)) {
       trailVisible.delete(icao);
       if (entry.trailLine) map.removeLayer(entry.trailLine);
-      if (pIcon) { pIcon.classList.remove('bx-show'); pIcon.classList.add('bx-hide'); }
-      if (sIcon) { sIcon.classList.remove('bx-show'); sIcon.classList.add('bx-hide'); }
-      if (sBtn) { sBtn.style.color = '#a1a1aa'; }
+      if (pBtn) pBtn.innerHTML = eyeClosedSvg;
+      if (sBtn) {
+        sBtn.innerHTML = eyeClosedSvg;
+        sBtn.style.color = '#a1a1aa';
+      }
     } else {
       trailVisible.add(icao);
       if (entry.trailLine) entry.trailLine.addTo(map);
-      if (pIcon) { pIcon.classList.remove('bx-hide'); pIcon.classList.add('bx-show'); }
-      if (sIcon) { sIcon.classList.remove('bx-hide'); sIcon.classList.add('bx-show'); }
-      if (sBtn) { sBtn.style.color = '#3b82f6'; }
+      if (pBtn) pBtn.innerHTML = eyeOpenSvg;
+      if (sBtn) {
+        sBtn.innerHTML = eyeOpenSvg;
+        sBtn.style.color = '#3b82f6';
+      }
     }
   };
 
@@ -1218,8 +1224,8 @@
 
     return `
       <div class="card-actions">
-        <button class="card-action-btn trail-btn" title="Toggle Trail" onclick="window.toggleTrail('${icao}')" style="margin-right: 4px; background: none; border: none; cursor: pointer; color: ${trailVisible.has(icao) ? '#3b82f6' : '#a1a1aa'}; padding: 0;">
-          <i id="sidebar-trail-icon-${icao}" class='bx ${trailVisible.has(icao) ? 'bx-show' : 'bx-hide'}' style="font-size: 16px;"></i>
+        <button id="trail-btn-sidebar-${icao}" class="card-action-btn trail-btn" title="Toggle Trail" onclick="window.toggleTrail('${icao}')" style="margin-right: 4px; background: none; border: none; cursor: pointer; color: ${trailVisible.has(icao) ? '#3b82f6' : '#a1a1aa'}; padding: 0;">
+          ${trailVisible.has(icao) ? eyeOpenSvg : eyeClosedSvg}
         </button>
         <button class="card-action-btn pin-btn${pinned ? ' pinned' : ''}" title="Pin">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="${pinned ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
