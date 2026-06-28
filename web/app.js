@@ -528,6 +528,9 @@
         iconAnchor: [16, 16],
       }));
       entry.marker.setTooltipContent(markerTooltip(ac));
+      if (activeIcao === icao && entry.marker.isPopupOpen()) {
+        openPopup(icao);
+      }
     } else {
       const icon = L.divIcon({
         className: '',
@@ -563,6 +566,14 @@
           if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         renderSidebar();
+      });
+
+      marker.on('popupclose', () => {
+        if (activeIcao === icao) {
+          activeIcao = null;
+          const card = document.querySelector(`.aircraft-card[data-icao="${icao}"]`);
+          if (card) card.classList.remove('expanded', 'active');
+        }
       });
 
       entry.marker = marker;
@@ -989,7 +1000,14 @@
         </div>
       </div>`;
 
-    entry.marker.bindPopup(html, { maxWidth: 320, autoPan: true }).openPopup();
+    if (!entry.marker.getPopup()) {
+      entry.marker.bindPopup(html, { maxWidth: 320, autoPan: true });
+    } else {
+      entry.marker.setPopupContent(html);
+    }
+    if (!entry.marker.isPopupOpen()) {
+      entry.marker.openPopup();
+    }
   }
 
   window.toggleTrail = function(icao) {
