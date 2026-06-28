@@ -912,6 +912,17 @@ html, body {
   gap: 8px;
   padding: 12px 14px;
   border-bottom: 1px solid var(--glass-border);
+  cursor: pointer;
+  user-select: none;
+}
+.nearby-panel.collapsed .nearby-list {
+  display: none;
+}
+.nearby-panel.collapsed .nearby-arrow {
+  transform: rotate(-90deg) !important;
+}
+.nearby-panel.collapsed .nearby-header {
+  border-bottom: none;
 }
 .nearby-icon { font-size: 14px; }
 .nearby-title {

@@ -198,11 +198,12 @@
   </div>
 
   <!-- Nearby aircraft panel (left side, floating over map) -->
-  <div id="nearby-section" class="nearby-panel" style="display:none">
-    <div class="nearby-header">
+  <div id="nearby-section" class="nearby-panel collapsed" style="display:none">
+    <div class="nearby-header" onclick="document.getElementById('nearby-section').classList.toggle('collapsed')">
       <span class="nearby-icon">📡</span>
       <span class="nearby-title">Nearby Aircraft</span>
       <span id="nearby-count" class="nearby-count">0</span>
+      <svg class="nearby-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: auto; transition: transform 0.2s;"><path d="M6 9l6 6 6-6"/></svg>
     </div>
     <div id="nearby-list" class="nearby-list"></div>
   </div>
