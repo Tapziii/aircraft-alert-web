@@ -140,16 +140,29 @@
     const parts = [`<b>${reg}</b>`];
     if (op) parts.push(`<span style="color:#a5b4fc">${op}</span>`);
     if (cs) parts.push(`✈ ${cs}`);
+    
+    let altStr = '';
+    if (ac.altitude !== undefined) {
+      if (ac.altitude === 0 || String(ac.altitude) === 'ground') altStr = 'Ground';
+      else altStr = `${Math.round(ac.altitude).toLocaleString()}ft`;
+      parts.push(`<span style="color:#fcd34d">${altStr}</span>`);
+    } else if (ac.alt_baro !== undefined) {
+      if (ac.alt_baro === 0 || String(ac.alt_baro) === 'ground') altStr = 'Ground';
+      else altStr = `${Math.round(ac.alt_baro).toLocaleString()}ft`;
+      parts.push(`<span style="color:#fcd34d">${altStr}</span>`);
+    }
+
     // Climb/descend arrow
     const vr = ac.vertical_rate || ac.baro_rate || 0;
     if (vr > 300) parts.push(`<span style="color:#4ade80;font-size:14px">↑</span>`);
     else if (vr < -300) parts.push(`<span style="color:#fbbf24;font-size:14px">↓</span>`);
-    let tip = parts.join(' <span style="opacity:0.3">·</span> ');
+    
+    let tip = parts.join(' <span style="opacity:0.3">•</span> ');
     // Route line
     const orig = ac.origin && ac.origin !== 'N/A' ? ac.origin : '';
     const dest = ac.destination && ac.destination !== 'N/A' ? ac.destination : '';
     if (orig || dest) {
-      tip += `<br><span style="color:#93c5fd;font-size:11px;letter-spacing:0.5px">${orig || '?'} → ${dest || '?'}</span>`;
+      tip += `<br><span style="color:#93c5fd;font-size:11px;letter-spacing:0.5px">${orig || '?'} ➔ ${dest || '?'}</span>`;
     }
     return tip;
   }
@@ -1352,7 +1365,7 @@
             fillOpacity: 0.8,
             weight: 2,
           }).addTo(map);
-          nearbyMarkers[icao].bindTooltip(tip, { direction: 'top', offset: [0, -8], className: 'airport-tooltip' });
+          nearbyMarkers[icao].bindTooltip(tip, { direction: 'top', offset: [0, -8], className: 'nearby-tooltip' });
         }
       }
     });
@@ -1763,11 +1776,18 @@
           };
         }
       }
-      // Remove aircraft that left the radius
+      // Remove aircraft that left the radius or stopped transmitting
       Object.keys(nearbyAircraft).forEach(k => {
         if (!currentKeys.has(k)) {
-          delete nearbyAircraft[k];
-          if (nearbyMarkers[k]) { map.removeLayer(nearbyMarkers[k]); delete nearbyMarkers[k]; }
+          const ac = nearbyAircraft[k];
+          const age = Date.now() - ac.ts;
+          const isSlow = ac.gs == null || ac.gs < 50;
+          // If it was flying fast, delete it quickly (probably left radius)
+          // If it was slow/parked, keep it up to 3 minutes to hide API drops (flickering)
+          if ((!isSlow && age > 10000) || (isSlow && age > 180000)) {
+            delete nearbyAircraft[k];
+            if (nearbyMarkers[k]) { map.removeLayer(nearbyMarkers[k]); delete nearbyMarkers[k]; }
+          }
         }
       });
       renderNearby(true); // Fast: markers only, skip DOM rebuild
