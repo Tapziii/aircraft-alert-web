@@ -541,30 +541,20 @@
 
       const marker = L.marker([lat, lon], { icon })
         .addTo(map)
-        .bindTooltip(markerTooltip(ac), { direction: 'top', offset: [0, -18] });
+        .bindTooltip(markerTooltip(ac), { direction: 'top', offset: [0, -18] })
+        .bindPopup('', { maxWidth: 320, autoPan: true });
 
-      marker.on('click', (e) => {
-        if (activeIcao === icao && entry.marker?.isPopupOpen?.()) {
-          // Already active — close popup and collapse card
-          entry.marker.closePopup();
-          activeIcao = null;
-          const card = document.querySelector(`.aircraft-card[data-icao="${icao}"]`);
-          if (card) card.classList.remove('expanded', 'active');
-        } else {
-          // Open popup and expand card
-          activeIcao = icao;
-          map.panTo([lat, lon], { animate: true });
-          openPopup(icao);
-          // Sync card
-          document.querySelectorAll('.aircraft-card').forEach(c => {
-            const isThis = c.dataset.icao === icao;
-            c.classList.toggle('active', isThis);
-            c.classList.toggle('expanded', isThis);
-          });
-          // Scroll card into view
-          const card = document.querySelector(`.aircraft-card[data-icao="${icao}"]`);
-          if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
+      marker.on('popupopen', () => {
+        activeIcao = icao;
+        openPopup(icao);
+        
+        document.querySelectorAll('.aircraft-card').forEach(c => {
+          const isThis = c.dataset.icao === icao;
+          c.classList.toggle('active', isThis);
+          c.classList.toggle('expanded', isThis);
+        });
+        const card = document.querySelector(`.aircraft-card[data-icao="${icao}"]`);
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         renderSidebar();
       });
 
@@ -573,6 +563,15 @@
           activeIcao = null;
           const card = document.querySelector(`.aircraft-card[data-icao="${icao}"]`);
           if (card) card.classList.remove('expanded', 'active');
+        }
+        renderSidebar();
+      });
+
+      marker.on('click', () => {
+        const currentLat = getLat(aircraftData[icao]?.data);
+        const currentLon = getLon(aircraftData[icao]?.data);
+        if (currentLat != null && currentLon != null) {
+          map.panTo([currentLat, currentLon], { animate: true });
         }
       });
 
@@ -1000,14 +999,7 @@
         </div>
       </div>`;
 
-    if (!entry.marker.getPopup()) {
-      entry.marker.bindPopup(html, { maxWidth: 320, autoPan: true });
-    } else {
-      entry.marker.setPopupContent(html);
-    }
-    if (!entry.marker.isPopupOpen()) {
-      entry.marker.openPopup();
-    }
+    entry.marker.setPopupContent(html);
   }
 
   window.toggleTrail = function(icao) {
